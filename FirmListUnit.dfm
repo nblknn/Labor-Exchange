@@ -2,7 +2,7 @@ object FirmListForm: TFirmListForm
   Left = 0
   Top = 0
   Caption = #1057#1087#1080#1089#1086#1082' '#1092#1080#1088#1084
-  ClientHeight = 377
+  ClientHeight = 384
   ClientWidth = 759
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,16 +13,16 @@ object FirmListForm: TFirmListForm
   Menu = MainMenu
   Position = poScreenCenter
   TextHeight = 20
-  object ListView1: TListView
+  object ListView: TListView
     Left = 8
-    Top = 48
+    Top = 55
     Width = 743
     Height = 321
     Columns = <
       item
-        Caption = #1053#1072#1079#1074#1072#1085#1080#1077
+        Caption = #1053#1072#1079#1074#1072#1085#1080#1077' '#1092#1080#1088#1084#1099
         MinWidth = 50
-        Width = 90
+        Width = 110
       end
       item
         Caption = #1057#1087#1077#1094#1080#1072#1083#1100#1085#1086#1089#1090#1100
@@ -37,7 +37,7 @@ object FirmListForm: TFirmListForm
       item
         Caption = #1054#1082#1083#1072#1076
         MinWidth = 50
-        Width = 90
+        Width = 70
       end
       item
         Caption = #1044#1085#1077#1081' '#1086#1090#1087#1091#1089#1082#1072
@@ -59,15 +59,19 @@ object FirmListForm: TFirmListForm
     Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
+    RowSelect = True
     ParentFont = False
     TabOrder = 4
     ViewStyle = vsReport
+    OnChange = ListViewChange
+    OnDblClick = ListViewDblClick
+    OnSelectItem = ListViewSelectItem
   end
   object ButtonAdd: TButton
     Left = 8
     Top = 8
     Width = 169
-    Height = 34
+    Height = 41
     Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074#1072#1082#1072#1085#1089#1080#1102
     TabOrder = 0
     OnClick = ButtonAddClick
@@ -76,16 +80,17 @@ object FirmListForm: TFirmListForm
     Left = 200
     Top = 8
     Width = 169
-    Height = 34
+    Height = 41
     Caption = #1059#1076#1072#1083#1080#1090#1100' '#1074#1072#1082#1072#1085#1089#1080#1102
     Enabled = False
     TabOrder = 1
+    OnClick = ButtonDeleteClick
   end
   object ButtonSearch: TButton
     Left = 392
     Top = 8
     Width = 169
-    Height = 34
+    Height = 41
     Caption = #1055#1086#1080#1089#1082' '#1074#1072#1082#1072#1085#1089#1080#1080
     Enabled = False
     TabOrder = 2
@@ -94,7 +99,7 @@ object FirmListForm: TFirmListForm
     Left = 582
     Top = 8
     Width = 169
-    Height = 34
+    Height = 41
     Caption = #1055#1086#1076#1086#1073#1088#1072#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074
     Enabled = False
     TabOrder = 3
@@ -102,7 +107,7 @@ object FirmListForm: TFirmListForm
   object MainMenu: TMainMenu
     Left = 264
     Top = 65528
-    object N1: TMenuItem
+    object MMFile: TMenuItem
       Caption = #1060#1072#1081#1083
       object MMOpenFile: TMenuItem
         Caption = #1054#1090#1082#1088#1099#1090#1100'...'
@@ -113,6 +118,9 @@ object FirmListForm: TFirmListForm
         Enabled = False
         ShortCut = 16467
       end
+    end
+    object MMInstruction: TMenuItem
+      Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
     end
   end
 end

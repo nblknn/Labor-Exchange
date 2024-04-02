@@ -44,6 +44,7 @@ object MainForm: TMainForm
     Height = 42
     Caption = #1057#1087#1080#1089#1086#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074
     TabOrder = 1
+    OnClick = ButtonCandidateListClick
   end
   object ButtonDeficite: TButton
     Left = 47

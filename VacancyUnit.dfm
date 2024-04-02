@@ -4,7 +4,7 @@ object VacancyForm: TVacancyForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1042#1072#1082#1072#1085#1089#1080#1103
-  ClientHeight = 299
+  ClientHeight = 273
   ClientWidth = 296
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,7 +15,9 @@ object VacancyForm: TVacancyForm
   KeyPreview = True
   Menu = MainMenu
   Position = poScreenCenter
+  OnClose = FormClose
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   TextHeight = 15
   object LabelName: TLabel
     Left = 55
@@ -28,10 +30,10 @@ object VacancyForm: TVacancyForm
     Left = 66
     Top = 40
     Width = 88
-    Height = 15
+    Height = 12
     Caption = #1057#1087#1077#1094#1080#1072#1083#1100#1085#1086#1089#1090#1100':'
   end
-  object LabelPosition: TLabel
+  object LabelTitle: TLabel
     Left = 89
     Top = 69
     Width = 65
@@ -47,7 +49,7 @@ object VacancyForm: TVacancyForm
   end
   object LabelHighEducation: TLabel
     Left = 32
-    Top = 155
+    Top = 153
     Width = 122
     Height = 15
     Caption = #1042#1099#1089#1096#1077#1077' '#1086#1073#1088#1072#1079#1086#1074#1072#1085#1080#1077':'
@@ -61,14 +63,14 @@ object VacancyForm: TVacancyForm
   end
   object LabelMinAge: TLabel
     Left = 23
-    Top = 202
+    Top = 179
     Width = 131
     Height = 15
     Caption = #1052#1080#1085#1080#1084#1072#1083#1100#1085#1099#1081' '#1074#1086#1079#1088#1072#1089#1090':'
   end
   object LabelMaxAge: TLabel
     Left = 19
-    Top = 233
+    Top = 210
     Width = 135
     Height = 15
     Caption = #1052#1072#1082#1089#1080#1084#1072#1083#1100#1085#1099#1081' '#1074#1086#1079#1088#1072#1089#1090':'
@@ -78,11 +80,13 @@ object VacancyForm: TVacancyForm
     Top = 8
     Width = 121
     Height = 23
-    Hint = #1044#1086' 30 '#1089#1080#1084#1074#1086#1083#1086#1074
+    Hint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    TextHint = #1044#1086' 30 '#1089#1080#1084#1074#1086#1083#1086#1074
+    TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
+    OnChange = EditOnChange
+    OnKeyPress = EditNameKeyPress
   end
   object EditSalary: TEdit
     Left = 160
@@ -90,32 +94,39 @@ object VacancyForm: TVacancyForm
     Width = 121
     Height = 23
     Hint = '1..99999'
+    NumbersOnly = True
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
     TextHint = '1..99999'
+    OnChange = EditOnChange
+    OnKeyPress = EditSalaryKeyPress
   end
-  object EditPosition: TEdit
+  object EditTitle: TEdit
     Left = 160
     Top = 66
     Width = 121
     Height = 23
-    Hint = #1044#1086' 30 '#1089#1080#1084#1074#1086#1083#1086#1074
+    Hint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     ParentShowHint = False
     ShowHint = True
     TabOrder = 2
-    TextHint = #1044#1086' 30 '#1089#1080#1084#1074#1086#1083#1086#1074
+    TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
+    OnChange = EditOnChange
+    OnKeyPress = EditTitleKeyPress
   end
   object EditSpeciality: TEdit
     Left = 160
     Top = 37
     Width = 121
     Height = 23
-    Hint = #1044#1086' 30 '#1089#1080#1084#1074#1086#1083#1086#1074
+    Hint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
-    TextHint = #1044#1086' 30 '#1089#1080#1084#1074#1086#1083#1086#1074
+    TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
+    OnChange = EditOnChange
+    OnKeyPress = EditSpecialityKeyPress
   end
   object EditVacationDays: TEdit
     Left = 160
@@ -123,65 +134,68 @@ object VacancyForm: TVacancyForm
     Width = 121
     Height = 23
     Hint = '1..99'
+    NumbersOnly = True
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
     TextHint = '1..99'
+    OnChange = EditOnChange
+    OnKeyPress = EditVacationDaysKeyPress
   end
   object EditMinAge: TEdit
     Left = 160
-    Top = 199
+    Top = 176
     Width = 121
     Height = 23
     Hint = '14..99'
+    NumbersOnly = True
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 6
+    TextHint = '14..99'
+    OnChange = EditOnChange
+    OnKeyPress = EditMinAgeKeyPress
+  end
+  object EditMaxAge: TEdit
+    Left = 160
+    Top = 207
+    Width = 121
+    Height = 23
+    Hint = '14..99'
+    NumbersOnly = True
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7
     TextHint = '14..99'
-  end
-  object Edit7: TEdit
-    Left = 160
-    Top = 230
-    Width = 121
-    Height = 23
-    Hint = '14..99'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 8
-    TextHint = '14..99'
-  end
-  object RadioButtonRequired: TRadioButton
-    Left = 160
-    Top = 153
-    Width = 113
-    Height = 17
-    Caption = #1058#1088#1077#1073#1091#1077#1090#1089#1103
-    TabOrder = 5
-  end
-  object RadioButtonNotRequired: TRadioButton
-    Left = 160
-    Top = 176
-    Width = 113
-    Height = 17
-    Caption = #1053#1077' '#1090#1088#1077#1073#1091#1077#1090#1089#1103
-    TabOrder = 6
+    OnChange = EditOnChange
+    OnKeyPress = EditMaxAgeKeyPress
   end
   object ButtonSave: TButton
     Left = 31
-    Top = 264
+    Top = 241
     Width = 103
     Height = 25
     Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
-    TabOrder = 9
+    Enabled = False
+    TabOrder = 8
+    OnClick = ButtonSaveClick
   end
   object ButtonCancel: TButton
     Left = 160
-    Top = 264
+    Top = 241
     Width = 103
     Height = 25
     Caption = #1054#1090#1084#1077#1085#1072
-    TabOrder = 10
+    TabOrder = 9
     OnClick = ButtonCancelClick
+  end
+  object CheckBoxHighEducation: TCheckBox
+    Left = 160
+    Top = 153
+    Width = 97
+    Height = 17
+    Caption = #1058#1088#1077#1073#1091#1077#1090#1089#1103
+    TabOrder = 5
   end
   object MainMenu: TMainMenu
     Left = 9

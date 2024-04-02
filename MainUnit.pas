@@ -7,26 +7,16 @@ Uses
     System.Classes, Vcl.Graphics,
     Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus;
 
-Type
-    PFirm = ^TFirm;
-    TFirm = record
-        Name, Speciality, Position: String[30];
-        Salary, VacationDays: Integer;
-        IsHighEducationRequired: Boolean;
-        MinAge, MaxAge: Integer;
-        Next: PFirm;
-    end;
+Const
+    MAXLEN = 20;
+    MINSALARY = 1;
+    MAXSALARY = 99_999;
+    MINVACATION = 1;
+    MAXVACATION = 99;
+    MINWORKAGE = 14;
+    MAXWORKAGE = 99;
 
-    PCandidate = ^TCandidate;
-    TCandidate = record
-        Name, Surname, Patronymic: String[30];
-        BirthDate: TDate;
-        Speciality: String[30];
-        HasHighEducation: Boolean;
-        Position: String[30];
-        MinSalary: Integer;
-        Next: PCandidate;
-    end;
+Type
     TMainForm = Class(TForm)
     MainMenu: TMainMenu;
     MMProgramInfo: TMenuItem;
@@ -35,6 +25,7 @@ Type
     ButtonCandidateList: TButton;
     ButtonDeficite: TButton;
     procedure ButtonFirmListClick(Sender: TObject);
+    procedure ButtonCandidateListClick(Sender: TObject);
     Private
         { Private declarations }
     Public
@@ -48,7 +39,12 @@ Implementation
 
 {$R *.dfm}
 
-Uses FirmListUnit;
+Uses FirmListUnit, CandidateListUnit;
+
+procedure TMainForm.ButtonCandidateListClick(Sender: TObject);
+begin
+    CandidateListForm.ShowModal;
+end;
 
 procedure TMainForm.ButtonFirmListClick(Sender: TObject);
 begin
