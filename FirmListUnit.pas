@@ -6,7 +6,7 @@ Uses
     Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
     System.Classes, Vcl.Graphics,
     Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.Menus, Vcl.StdCtrls,
-    MainUnit;
+    MainUnit, Vcl.ExtCtrls, Vcl.DBCtrls;
 
 Type
     PFirm = ^TFirm;
@@ -30,9 +30,9 @@ Type
         ButtonSearch: TButton;
         ButtonFindCandidates: TButton;
         MMInstruction: TMenuItem;
+        SaveDialog: TSaveDialog;
+        OpenDialog: TOpenDialog;
         Procedure ButtonAddClick(Sender: TObject);
-        Procedure AddVacancyToListView(FirmInfo: TFirm);
-        Procedure AddVacancy(FirmInfo: TFirm);
         Procedure DeleteVacancy(FirmInfo: TFirm);
         Procedure ListViewSelectItem(Sender: TObject; Item: TListItem;
           Selected: Boolean);
@@ -41,11 +41,19 @@ Type
         Procedure ButtonDeleteClick(Sender: TObject);
         Procedure ListViewDblClick(Sender: TObject);
         Procedure EditVacancy(OldInfo, NewInfo: TFirm);
+        Procedure FormKeyDown(Sender: TObject; Var Key: Word;
+          Shift: TShiftState);
+        Procedure MMSaveFileClick(Sender: TObject);
+        Procedure MMOpenFileClick(Sender: TObject);
+    procedure ButtonSearchClick(Sender: TObject);
     Private
         { Private declarations }
     Public
         { Public declarations }
     End;
+
+Procedure AddVacancyToListView(FirmInfo: TFirm; ListView: TListView);
+Procedure AddVacancy(FirmInfo: TFirm; Var Head: PFirm);
 
 Var
     FirmListForm: TFirmListForm;
@@ -55,29 +63,31 @@ Implementation
 
 {$R *.dfm}
 
-Uses VacancyUnit;
+Uses VacancyUnit, SearchVacancyUnit;
 
 Const
     HIGHEDUCATIONREQUIRED: Array [Boolean] Of String = ('Не требуется',
       'Требуется');
 
-Procedure TFirmListForm.AddVacancy(FirmInfo: TFirm);
+Var
+    IsFileSaved: Boolean;
+
+Procedure AddVacancy(FirmInfo: TFirm; Var Head: PFirm);
 Var
     NewFirm, Temp: PFirm;
 Begin
     NewFirm := New(PFirm);
     NewFirm^ := FirmInfo;
     NewFirm^.Next := Nil;
-    If FirmHead = Nil Then
-        FirmHead := NewFirm
+    If Head = Nil Then
+        Head := NewFirm
     Else
     Begin
-        Temp := FirmHead;
+        Temp := Head;
         While Temp.Next <> Nil Do
             Temp := Temp.Next;
-        Temp.Next := FirmHead;
+        Temp.Next := NewFirm;
     End;
-    AddVacancyToListView(FirmInfo);
 End;
 
 Function AreVacanciesEqual(Firm1, Firm2: TFirm): Boolean;
@@ -90,6 +100,21 @@ Begin
       (Firm1.MinAge = Firm2.MinAge) And (Firm1.MaxAge = Firm2.MaxAge);
 End;
 
+Procedure EditVacancyInListView(NewInfo: TFirm);
+Begin
+    With FirmListForm.ListView.Selected, NewInfo Do
+    Begin
+        Caption := Name;
+        SubItems[0] := Speciality;
+        SubItems[1] := Title;
+        SubItems[2] := IntToStr(Salary);
+        SubItems[3] := IntToStr(VacationDays);
+        SubItems[4] := HIGHEDUCATIONREQUIRED[IsHighEducationRequired];
+        SubItems[5] := IntToStr(MinAge) + '-' + IntToStr(MaxAge);
+    End;
+    IsFileSaved := False;
+End;
+
 Procedure TFirmListForm.EditVacancy(OldInfo, NewInfo: TFirm);
 Var
     Temp: PFirm;
@@ -98,6 +123,14 @@ Begin
     While Not AreVacanciesEqual(OldInfo, Temp^) Do
         Temp := Temp.Next;
     Temp^ := NewInfo;
+    EditVacancyInListView(NewInfo); // вызывать из вакансиюнит?
+End;
+
+Procedure TFirmListForm.FormKeyDown(Sender: TObject; Var Key: Word;
+  Shift: TShiftState);
+Begin
+    If Key = VK_ESCAPE Then
+        Close;
 End;
 
 Procedure TFirmListForm.DeleteVacancy(FirmInfo: TFirm);
@@ -117,7 +150,20 @@ Begin
     Dispose(Temp1);
 End;
 
-Procedure TFirmListForm.AddVacancyToListView(FirmInfo: TFirm);
+Procedure DeleteFirmList(Var Head: PFirm);
+Var
+    Temp: PFirm;
+Begin
+    Temp := Head;
+    While Temp <> Nil Do
+    Begin
+        Head := Head.Next;
+        Dispose(Temp);
+        Temp := Head;
+    End;
+End;
+
+Procedure AddVacancyToListView(FirmInfo: TFirm; ListView: TListView);
 Var
     NewItem: TListItem;
 Begin
@@ -132,6 +178,7 @@ Begin
         Add(HIGHEDUCATIONREQUIRED[IsHighEducationRequired]);
         Add(IntToStr(MinAge) + '-' + IntToStr(MaxAge));
     End;
+    IsFileSaved := False;
 End;
 
 Procedure TFirmListForm.ButtonAddClick(Sender: TObject);
@@ -168,21 +215,27 @@ Begin
     Begin
         DeleteVacancy(GetFirmInfo(ListView.Selected));
         ListView.Selected.Delete;
-        // MMSaveFile.Enabled := MainListView.Items.Count > 0;
+        IsFileSaved := False;
     End
     Else
         ListView.ClearSelection;
 End;
 
+procedure TFirmListForm.ButtonSearchClick(Sender: TObject);
+begin
+    SearchVacancyForm.Show;
+end;
+
 Procedure TFirmListForm.ListViewChange(Sender: TObject; Item: TListItem;
   Change: TItemChange);
 Begin
     ButtonSearch.Enabled := ListView.Items.Count > 0;
+    MMSaveFile.Enabled := ListView.Items.Count > 0;
 End;
 
 Procedure TFirmListForm.ListViewDblClick(Sender: TObject);
 Begin
-    VacancyInfo := GetFirmInfo(ListView.Selected);
+    OldInfo := GetFirmInfo(ListView.Selected);
     IsEditing := True;
     VacancyForm.ShowModal;
 End;
@@ -192,6 +245,70 @@ Procedure TFirmListForm.ListViewSelectItem(Sender: TObject; Item: TListItem;
 Begin
     ButtonDelete.Enabled := Selected;
     ButtonFindCandidates.Enabled := Selected;
+End;
+
+Procedure TFirmListForm.MMOpenFileClick(Sender: TObject);
+Var
+    FirmFile: File Of TFirm;
+    FirmInfo: TFirm;
+    Head: PFirm;
+Begin
+    If OpenDialog.Execute Then
+        Try
+            Head := Nil;
+            AssignFile(FirmFile, OpenDialog.FileName);
+            Try
+                Reset(FirmFile);
+                While Not Eof(FirmFile) Do
+                Begin
+                    Read(FirmFile, FirmInfo);
+                    AddVacancy(FirmInfo, Head);
+                End;
+            Except
+
+            End;
+        Finally
+            CloseFile(FirmFile);
+        End;
+    If True Then
+    Begin
+        DeleteFirmList(FirmHead);
+        FirmHead := Head;
+        While Head <> Nil Do
+        Begin
+            AddVacancyToListView(Head^, ListView);
+            Head := Head.Next;
+        End;
+        IsFileSaved := True;
+    End
+    Else
+        DeleteFirmList(Head);
+End;
+
+Procedure TFirmListForm.MMSaveFileClick(Sender: TObject);
+Var
+    FirmFile: File Of TFirm;
+    Temp: PFirm;
+Begin
+    If SaveDialog.Execute Then
+        Try
+            Temp := FirmHead;
+            AssignFile(FirmFile, SaveDialog.FileName);
+            Try
+                Rewrite(FirmFile);
+                While Temp <> Nil Do
+                Begin
+                    Write(FirmFile, Temp^);
+                    Temp := Temp.Next;
+                End;
+            Except
+
+            End;
+        Finally
+            CloseFile(FirmFile);
+        End;
+    If True Then
+        IsFileSaved := True;
 End;
 
 End.

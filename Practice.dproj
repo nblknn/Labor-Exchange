@@ -114,6 +114,14 @@
             <Form>CandidateListForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="SearchVacancyUnit.pas">
+            <Form>SearchVacancyForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="CandidateUnit.pas">
+            <Form>CandidateForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

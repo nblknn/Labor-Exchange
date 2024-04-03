@@ -7,6 +7,25 @@ Uses
     System.Classes, Vcl.Graphics,
     Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus;
 
+Type
+    TError = (Correct, ErrIncorrectValue, ErrIncorrectFileExt, ErrCantOpenFile,
+      ErrCantSaveFile);
+
+    TMainForm = Class(TForm)
+        MainMenu: TMainMenu;
+        MMProgramInfo: TMenuItem;
+        Label1: TLabel;
+        ButtonFirmList: TButton;
+        ButtonCandidateList: TButton;
+        ButtonDeficite: TButton;
+        Procedure ButtonFirmListClick(Sender: TObject);
+        Procedure ButtonCandidateListClick(Sender: TObject);
+    Private
+        { Private declarations }
+    Public
+        { Public declarations }
+    End;
+
 Const
     MAXLEN = 20;
     MINSALARY = 1;
@@ -15,22 +34,12 @@ Const
     MAXVACATION = 99;
     MINWORKAGE = 14;
     MAXWORKAGE = 99;
+    ERRORMESSAGES: Array [TError] Of PWideChar = ('',
+      'Проверьте корректность данных!', 'Файл должен иметь разрешение *.txt!',
+      'Произошла ошибка при открытии файла!',
+      'Произошла ошибка при записи в файл!');
 
-Type
-    TMainForm = Class(TForm)
-    MainMenu: TMainMenu;
-    MMProgramInfo: TMenuItem;
-    Label1: TLabel;
-    ButtonFirmList: TButton;
-    ButtonCandidateList: TButton;
-    ButtonDeficite: TButton;
-    procedure ButtonFirmListClick(Sender: TObject);
-    procedure ButtonCandidateListClick(Sender: TObject);
-    Private
-        { Private declarations }
-    Public
-        { Public declarations }
-    End;
+Procedure ShowErrorMessage(Error: TError);
 
 Var
     MainForm: TMainForm;
@@ -41,14 +50,19 @@ Implementation
 
 Uses FirmListUnit, CandidateListUnit;
 
-procedure TMainForm.ButtonCandidateListClick(Sender: TObject);
-begin
-    CandidateListForm.ShowModal;
-end;
+Procedure ShowErrorMessage(Error: TError);
+Begin
+    Application.MessageBox(ERRORMESSAGES[Error], 'Ошибка', MB_ICONERROR);
+End;
 
-procedure TMainForm.ButtonFirmListClick(Sender: TObject);
-begin
-     FirmListForm.ShowModal;
-end;
+Procedure TMainForm.ButtonCandidateListClick(Sender: TObject);
+Begin
+    CandidateListForm.ShowModal;
+End;
+
+Procedure TMainForm.ButtonFirmListClick(Sender: TObject);
+Begin
+    FirmListForm.ShowModal;
+End;
 
 End.

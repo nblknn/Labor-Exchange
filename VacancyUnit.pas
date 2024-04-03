@@ -51,10 +51,15 @@ Type
         { Public declarations }
     End;
 
+Function IsStrEditCorrect(Edit: TEdit): Boolean;
+Function IsIntEditCorrect(Edit: TEdit;
+  Const MINVALUE, MAXVALUE: Integer): Boolean;
+Procedure EditKeyPress(Edit: TEdit; Var Key: Char; Const MAXLENGTH: Integer);
+
 Var
     VacancyForm: TVacancyForm;
     IsEditing: Boolean;
-    VacancyInfo: TFirm;
+    OldInfo: TFirm;
 
 Implementation
 
@@ -141,9 +146,9 @@ End;
 
 Procedure TVacancyForm.ButtonSaveClick(Sender: TObject);
 Var
-    FirmInfo: TFirm;
+    NewInfo: TFirm;
 Begin
-    With FirmInfo Do
+    With NewInfo Do
     Begin
         Name := EditName.Text;
         Speciality := EditSpeciality.Text;
@@ -155,9 +160,15 @@ Begin
         MaxAge := StrToInt(EditMaxAge.Text);
     End;
     If IsEditing Then
-        FirmListForm.EditVacancy(VacancyInfo, FirmInfo)
+    Begin
+        NewInfo.Next := OldInfo.Next;
+        FirmListForm.EditVacancy(OldInfo, NewInfo);
+    End
     Else
-        FirmListForm.AddVacancy(FirmInfo);
+    Begin
+        AddVacancy(NewInfo, FirmHead);
+        AddVacancyToListView(NewInfo, FirmListForm.ListView);
+    End;
     Close;
 End;
 
@@ -180,6 +191,7 @@ End;
 
 Procedure TVacancyForm.FormClose(Sender: TObject; Var Action: TCloseAction);
 Begin
+    IsEditing := False;
     ClearEdits();
     EditName.SetFocus;
 End;
@@ -196,7 +208,7 @@ End;
 Procedure TVacancyForm.FormShow(Sender: TObject);
 Begin
     If IsEditing Then
-        With VacancyInfo Do
+        With OldInfo Do
         Begin
             EditName.Text := Name;
             EditSpeciality.Text := Speciality;

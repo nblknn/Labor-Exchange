@@ -12,8 +12,10 @@ object CandidateListForm: TCandidateListForm
   Font.Height = -15
   Font.Name = 'Segoe UI'
   Font.Style = []
+  KeyPreview = True
   Menu = MainMenu
   Position = poScreenCenter
+  OnKeyDown = FormKeyDown
   TextHeight = 20
   object ButtonAdd: TButton
     Left = 8
@@ -22,6 +24,7 @@ object CandidateListForm: TCandidateListForm
     Height = 42
     Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
     TabOrder = 0
+    OnClick = ButtonAddClick
   end
   object ButtonDelete: TButton
     Left = 200

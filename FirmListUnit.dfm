@@ -2,7 +2,7 @@ object FirmListForm: TFirmListForm
   Left = 0
   Top = 0
   Caption = #1057#1087#1080#1089#1086#1082' '#1092#1080#1088#1084
-  ClientHeight = 384
+  ClientHeight = 381
   ClientWidth = 759
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -10,8 +10,10 @@ object FirmListForm: TFirmListForm
   Font.Height = -15
   Font.Name = 'Segoe UI'
   Font.Style = []
+  KeyPreview = True
   Menu = MainMenu
   Position = poScreenCenter
+  OnKeyDown = FormKeyDown
   TextHeight = 20
   object ListView: TListView
     Left = 8
@@ -94,6 +96,7 @@ object FirmListForm: TFirmListForm
     Caption = #1055#1086#1080#1089#1082' '#1074#1072#1082#1072#1085#1089#1080#1080
     Enabled = False
     TabOrder = 2
+    OnClick = ButtonSearchClick
   end
   object ButtonFindCandidates: TButton
     Left = 582
@@ -112,15 +115,25 @@ object FirmListForm: TFirmListForm
       object MMOpenFile: TMenuItem
         Caption = #1054#1090#1082#1088#1099#1090#1100'...'
         ShortCut = 16463
+        OnClick = MMOpenFileClick
       end
       object MMSaveFile: TMenuItem
         Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
         Enabled = False
         ShortCut = 16467
+        OnClick = MMSaveFileClick
       end
     end
     object MMInstruction: TMenuItem
       Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
     end
+  end
+  object SaveDialog: TSaveDialog
+    Left = 304
+    Top = 120
+  end
+  object OpenDialog: TOpenDialog
+    Left = 544
+    Top = 120
   end
 end
