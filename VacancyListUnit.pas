@@ -66,8 +66,8 @@ Implementation
 Uses VacancyUnit, SearchVacancyUnit;
 
 Const
-    HIGHEDUCATIONREQUIRED: Array [Boolean] Of String = ('Не требуется',
-      'Требуется');
+    HIGHEDUCATIONREQUIRED: Array [Boolean] Of String = ('ГЌГҐ ГІГ°ГҐГЎГіГҐГІГ±Гї',
+      'Г’Г°ГҐГЎГіГҐГІГ±Гї');
 
 Var
     IsFileSaved: Boolean;
@@ -123,7 +123,7 @@ Begin
     While Not AreVacanciesEqual(OldInfo, Temp^) Do
         Temp := Temp.Next;
     Temp^ := NewInfo;
-    EditVacancyInListView(NewInfo); // вызывать из вакансиюнит?
+    EditVacancyInListView(NewInfo); // ГўГ»Г§Г»ГўГ ГІГј ГЁГ§ ГўГ ГЄГ Г­Г±ГЁГѕГ­ГЁГІ?
 End;
 
 Procedure TFirmListForm.FormKeyDown(Sender: TObject; Var Key: Word;
@@ -209,7 +209,7 @@ Var
     ButtonSelected: Integer;
 Begin
     ButtonSelected := Application.MessageBox
-      ('Вы уверены, что хотите удалить выделенную вакансию?', 'Удаление',
+      ('Г‚Г» ГіГўГҐГ°ГҐГ­Г», Г·ГІГ® ГµГ®ГІГЁГІГҐ ГіГ¤Г Г«ГЁГІГј ГўГ»Г¤ГҐГ«ГҐГ­Г­ГіГѕ ГўГ ГЄГ Г­Г±ГЁГѕ?', 'Г“Г¤Г Г«ГҐГ­ГЁГҐ',
       MB_YESNO + MB_ICONQUESTION);
     If ButtonSelected = MrYes Then
     Begin
