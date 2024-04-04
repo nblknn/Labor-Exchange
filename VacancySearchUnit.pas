@@ -1,14 +1,14 @@
-unit SearchVacancyUnit;
+unit VacancySearchUnit;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FirmListUnit, Vcl.StdCtrls,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VacancyListUnit, Vcl.StdCtrls,
   Vcl.ExtCtrls, Vcl.DBCtrls;
 
 type
-  TSearchVacancyForm = class(TForm)
+  TVacancySearchForm = class(TForm)
     Edit1: TEdit;
     Button1: TButton;
     Button2: TButton;
@@ -21,7 +21,7 @@ type
   end;
 
 var
-  SearchVacancyForm: TSearchVacancyForm;
+  VacancySearchForm: TVacancySearchForm;
 
 implementation
 

@@ -6,7 +6,7 @@ Uses
     Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
     System.Classes, Vcl.Graphics,
     Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, Vcl.ExtCtrls,
-    Vcl.CheckLst, FirmListUnit;
+    Vcl.CheckLst, VacancyListUnit;
 
 Type
     TVacancyForm = Class(TForm)
@@ -59,7 +59,7 @@ Procedure EditKeyPress(Edit: TEdit; Var Key: Char; Const MAXLENGTH: Integer);
 Var
     VacancyForm: TVacancyForm;
     IsEditing: Boolean;
-    OldInfo: TFirm;
+    OldInfo: TVacancy;
 
 Implementation
 
@@ -146,11 +146,11 @@ End;
 
 Procedure TVacancyForm.ButtonSaveClick(Sender: TObject);
 Var
-    NewInfo: TFirm;
+    NewInfo: TVacancy;
 Begin
     With NewInfo Do
     Begin
-        Name := EditName.Text;
+        FirmName := EditName.Text;
         Speciality := EditSpeciality.Text;
         Title := EditTitle.Text;
         Salary := StrToInt(EditSalary.Text);
@@ -162,12 +162,12 @@ Begin
     If IsEditing Then
     Begin
         NewInfo.Next := OldInfo.Next;
-        FirmListForm.EditVacancy(OldInfo, NewInfo);
+        EditVacancy(OldInfo, NewInfo);
     End
     Else
     Begin
-        AddVacancy(NewInfo, FirmHead);
-        AddVacancyToListView(NewInfo, FirmListForm.ListView);
+        AddVacancy(NewInfo, VacancyHead);
+        AddVacancyToListView(NewInfo, VacancyListForm.ListView);
     End;
     Close;
 End;

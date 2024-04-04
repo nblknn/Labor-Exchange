@@ -3,11 +3,12 @@ program Practice;
 uses
   Vcl.Forms,
   MainUnit in 'MainUnit.pas' {MainForm},
-  FirmListUnit in 'FirmListUnit.pas' {FirmListForm},
+  VacancyListUnit in 'VacancyListUnit.pas' {VacancyListForm},
   VacancyUnit in 'VacancyUnit.pas' {VacancyForm},
   CandidateListUnit in 'CandidateListUnit.pas' {CandidateListForm},
-  SearchVacancyUnit in 'SearchVacancyUnit.pas' {SearchVacancyForm},
-  CandidateUnit in 'CandidateUnit.pas' {CandidateForm};
+  VacancySearchUnit in 'VacancySearchUnit.pas' {VacancySearchForm},
+  CandidateUnit in 'CandidateUnit.pas' {CandidateForm},
+  FindCandidatesUnit in 'FindCandidatesUnit.pas' {FindCandidatesForm};
 
 {$R *.res}
 
@@ -15,10 +16,11 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TFirmListForm, FirmListForm);
+  Application.CreateForm(TVacancyListForm, VacancyListForm);
   Application.CreateForm(TVacancyForm, VacancyForm);
   Application.CreateForm(TCandidateListForm, CandidateListForm);
-  Application.CreateForm(TSearchVacancyForm, SearchVacancyForm);
+  Application.CreateForm(TVacancySearchForm, VacancySearchForm);
   Application.CreateForm(TCandidateForm, CandidateForm);
+  Application.CreateForm(TFindCandidatesForm, FindCandidatesForm);
   Application.Run;
 end.

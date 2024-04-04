@@ -1,11 +1,11 @@
-object SearchVacancyForm: TSearchVacancyForm
+object VacancySearchForm: TVacancySearchForm
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = #1055#1086#1080#1089#1082' '#1074#1072#1082#1072#1085#1089#1080#1080
-  ClientHeight = 203
-  ClientWidth = 205
+  ClientHeight = 194
+  ClientWidth = 199
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

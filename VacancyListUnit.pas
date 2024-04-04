@@ -1,4 +1,4 @@
-Unit FirmListUnit;
+Unit VacancyListUnit;
 
 Interface
 
@@ -9,17 +9,17 @@ Uses
     MainUnit, Vcl.ExtCtrls, Vcl.DBCtrls;
 
 Type
-    PFirm = ^TFirm;
+    PVacancy = ^TVacancy;
 
-    TFirm = Record
-        Name, Speciality, Title: String[MAXLEN];
+    TVacancy = Record
+        FirmName, Speciality, Title: String[MAXLEN];
         Salary, VacationDays: Integer;
         IsHighEducationRequired: Boolean;
         MinAge, MaxAge: Integer;
-        Next: PFirm;
+        Next: PVacancy;
     End;
 
-    TFirmListForm = Class(TForm)
+    TVacancyListForm = Class(TForm)
         MainMenu: TMainMenu;
         MMFile: TMenuItem;
         MMOpenFile: TMenuItem;
@@ -33,51 +33,69 @@ Type
         SaveDialog: TSaveDialog;
         OpenDialog: TOpenDialog;
         Procedure ButtonAddClick(Sender: TObject);
-        Procedure DeleteVacancy(FirmInfo: TFirm);
         Procedure ListViewSelectItem(Sender: TObject; Item: TListItem;
           Selected: Boolean);
         Procedure ListViewChange(Sender: TObject; Item: TListItem;
           Change: TItemChange);
         Procedure ButtonDeleteClick(Sender: TObject);
         Procedure ListViewDblClick(Sender: TObject);
-        Procedure EditVacancy(OldInfo, NewInfo: TFirm);
         Procedure FormKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
         Procedure MMSaveFileClick(Sender: TObject);
         Procedure MMOpenFileClick(Sender: TObject);
-    procedure ButtonSearchClick(Sender: TObject);
+        Procedure ButtonSearchClick(Sender: TObject);
+    procedure ButtonFindCandidatesClick(Sender: TObject);
     Private
         { Private declarations }
     Public
         { Public declarations }
     End;
 
-Procedure AddVacancyToListView(FirmInfo: TFirm; ListView: TListView);
-Procedure AddVacancy(FirmInfo: TFirm; Var Head: PFirm);
+Procedure AddVacancyToListView(VacancyInfo: TVacancy; ListView: TListView);
+Procedure AddVacancy(VacancyInfo: TVacancy; Var Head: PVacancy);
+Procedure EditVacancy(OldInfo, NewInfo: TVacancy);
 
 Var
-    FirmListForm: TFirmListForm;
-    FirmHead: PFirm = Nil;
+    VacancyListForm: TVacancyListForm;
+    VacancyHead: PVacancy = Nil;
 
 Implementation
 
 {$R *.dfm}
 
-Uses VacancyUnit, SearchVacancyUnit;
+Uses VacancyUnit, VacancySearchUnit, FindCandidatesUnit;
 
 Const
-    HIGHEDUCATIONREQUIRED: Array [Boolean] Of String = ('√ç√• √≤√∞√•√°√≥√•√≤√±√ø',
-      '√í√∞√•√°√≥√•√≤√±√ø');
+    HIGHEDUCATIONREQUIRED: Array [Boolean] Of String = ('ÕÂ ÚÂ·ÛÂÚÒˇ',
+      '“Â·ÛÂÚÒˇ');
 
 Var
     IsFileSaved: Boolean;
 
-Procedure AddVacancy(FirmInfo: TFirm; Var Head: PFirm);
+Procedure AddVacancyToListView(VacancyInfo: TVacancy; ListView: TListView);
 Var
-    NewFirm, Temp: PFirm;
+    NewItem: TListItem;
 Begin
-    NewFirm := New(PFirm);
-    NewFirm^ := FirmInfo;
+    NewItem := ListView.Items.Add;
+    NewItem.Caption := VacancyInfo.FirmName;
+    With NewItem.SubItems, VacancyInfo Do
+    Begin
+        Add(Speciality);
+        Add(Title);
+        Add(IntToStr(Salary));
+        Add(IntToStr(VacationDays));
+        Add(HIGHEDUCATIONREQUIRED[IsHighEducationRequired]);
+        Add(IntToStr(MinAge) + '-' + IntToStr(MaxAge));
+    End;
+    IsFileSaved := False;
+End;
+
+Procedure AddVacancy(VacancyInfo: TVacancy; Var Head: PVacancy);
+Var
+    NewFirm, Temp: PVacancy;
+Begin
+    NewFirm := New(PVacancy);
+    NewFirm^ := VacancyInfo;
     NewFirm^.Next := Nil;
     If Head = Nil Then
         Head := NewFirm
@@ -90,21 +108,22 @@ Begin
     End;
 End;
 
-Function AreVacanciesEqual(Firm1, Firm2: TFirm): Boolean;
+Function AreVacanciesEqual(Vacancy1, Vacancy2: TVacancy): Boolean;
 Begin
-    AreVacanciesEqual := (Firm1.Name = Firm2.Name) And
-      (Firm1.Speciality = Firm2.Speciality) And (Firm1.Title = Firm2.Title) And
-      (Firm1.Salary = Firm2.Salary) And
-      (Firm1.VacationDays = Firm2.VacationDays) And
-      (Firm1.IsHighEducationRequired = Firm2.IsHighEducationRequired) And
-      (Firm1.MinAge = Firm2.MinAge) And (Firm1.MaxAge = Firm2.MaxAge);
+    AreVacanciesEqual := (Vacancy1.FirmName = Vacancy2.FirmName) And
+      (Vacancy1.Speciality = Vacancy2.Speciality) And
+      (Vacancy1.Title = Vacancy2.Title) And (Vacancy1.Salary = Vacancy2.Salary)
+      And (Vacancy1.VacationDays = Vacancy2.VacationDays) And
+      (Vacancy1.IsHighEducationRequired = Vacancy2.IsHighEducationRequired) And
+      (Vacancy1.MinAge = Vacancy2.MinAge) And
+      (Vacancy1.MaxAge = Vacancy2.MaxAge);
 End;
 
-Procedure EditVacancyInListView(NewInfo: TFirm);
+Procedure EditVacancyInListView(NewInfo: TVacancy);
 Begin
-    With FirmListForm.ListView.Selected, NewInfo Do
+    With VacancyListForm.ListView.Selected, NewInfo Do
     Begin
-        Caption := Name;
+        Caption := FirmName;
         SubItems[0] := Speciality;
         SubItems[1] := Title;
         SubItems[2] := IntToStr(Salary);
@@ -115,44 +134,46 @@ Begin
     IsFileSaved := False;
 End;
 
-Procedure TFirmListForm.EditVacancy(OldInfo, NewInfo: TFirm);
+Procedure EditVacancy(OldInfo, NewInfo: TVacancy);
 Var
-    Temp: PFirm;
+    Temp: PVacancy;
 Begin
-    Temp := FirmHead;
+    Temp := VacancyHead;
     While Not AreVacanciesEqual(OldInfo, Temp^) Do
         Temp := Temp.Next;
     Temp^ := NewInfo;
-    EditVacancyInListView(NewInfo); // √¢√ª√ß√ª√¢√†√≤√º √®√ß √¢√†√™√†√≠√±√®√æ√≠√®√≤?
+    EditVacancyInListView(NewInfo); // ‚˚Á˚‚‡Ú¸ ËÁ ‚‡Í‡ÌÒË˛ÌËÚ?
 End;
 
-Procedure TFirmListForm.FormKeyDown(Sender: TObject; Var Key: Word;
+Procedure TVacancyListForm.FormKeyDown(Sender: TObject; Var Key: Word;
   Shift: TShiftState);
 Begin
     If Key = VK_ESCAPE Then
-        Close;
+        Close
+    Else If (Key = VK_DELETE) And ButtonDelete.Enabled Then
+        ButtonDelete.Click;
 End;
 
-Procedure TFirmListForm.DeleteVacancy(FirmInfo: TFirm);
+Procedure DeleteVacancy(VacancyInfo: TVacancy);
 Var
-    Temp1, Temp2: PFirm;
+    Temp1, Temp2: PVacancy;
 Begin
-    Temp1 := FirmHead;
-    If Not AreVacanciesEqual(FirmInfo, Temp1^) Then
+    Temp1 := VacancyHead;
+    If Not AreVacanciesEqual(VacancyInfo, Temp1^) Then
     Begin
-        While Not AreVacanciesEqual(FirmInfo, Temp1.Next^) Do
+        While Not AreVacanciesEqual(VacancyInfo, Temp1.Next^) Do
             Temp1 := Temp1.Next;
         Temp2 := Temp1;
         Temp2.Next := Temp1.Next.Next;
     End
     Else
-        FirmHead := Temp1.Next;
+        VacancyHead := Temp1.Next;
     Dispose(Temp1);
 End;
 
-Procedure DeleteFirmList(Var Head: PFirm);
+Procedure DeleteVacancyList(Var Head: PVacancy);
 Var
-    Temp: PFirm;
+    Temp: PVacancy;
 Begin
     Temp := Head;
     While Temp <> Nil Do
@@ -163,36 +184,18 @@ Begin
     End;
 End;
 
-Procedure AddVacancyToListView(FirmInfo: TFirm; ListView: TListView);
-Var
-    NewItem: TListItem;
-Begin
-    NewItem := ListView.Items.Add;
-    NewItem.Caption := FirmInfo.Name;
-    With NewItem.SubItems, FirmInfo Do
-    Begin
-        Add(Speciality);
-        Add(Title);
-        Add(IntToStr(Salary));
-        Add(IntToStr(VacationDays));
-        Add(HIGHEDUCATIONREQUIRED[IsHighEducationRequired]);
-        Add(IntToStr(MinAge) + '-' + IntToStr(MaxAge));
-    End;
-    IsFileSaved := False;
-End;
-
-Procedure TFirmListForm.ButtonAddClick(Sender: TObject);
+Procedure TVacancyListForm.ButtonAddClick(Sender: TObject);
 Begin
     VacancyForm.ShowModal;
 End;
 
-Function GetFirmInfo(Item: TListItem): TFirm;
+Function GetVacancyInfo(Item: TListItem): TVacancy;
 Var
-    FirmInfo: TFirm;
+    Vacancy: TVacancy;
 Begin
-    With FirmInfo, Item Do
+    With Vacancy, Item Do
     Begin
-        Name := Caption;
+        FirmName := Caption;
         Speciality := SubItems[0];
         Title := SubItems[1];
         Salary := StrToInt(SubItems[2]);
@@ -201,19 +204,19 @@ Begin
         MinAge := StrToInt(Copy(SubItems[5], 1, Pos('-', SubItems[5]) - 1));
         MaxAge := StrToInt(Copy(SubItems[5], Pos('-', SubItems[5]) + 1, 2));
     End;
-    GetFirmInfo := FirmInfo;
+    GetVacancyInfo := Vacancy;
 End;
 
-Procedure TFirmListForm.ButtonDeleteClick(Sender: TObject);
+Procedure TVacancyListForm.ButtonDeleteClick(Sender: TObject);
 Var
     ButtonSelected: Integer;
 Begin
     ButtonSelected := Application.MessageBox
-      ('√Ç√ª √≥√¢√•√∞√•√≠√ª, √∑√≤√Æ √µ√Æ√≤√®√≤√• √≥√§√†√´√®√≤√º √¢√ª√§√•√´√•√≠√≠√≥√æ √¢√†√™√†√≠√±√®√æ?', '√ì√§√†√´√•√≠√®√•',
+      ('¬˚ Û‚ÂÂÌ˚, ˜ÚÓ ıÓÚËÚÂ Û‰‡ÎËÚ¸ ‚˚‰ÂÎÂÌÌÛ˛ ‚‡Í‡ÌÒË˛?', '”‰‡ÎÂÌËÂ',
       MB_YESNO + MB_ICONQUESTION);
     If ButtonSelected = MrYes Then
     Begin
-        DeleteVacancy(GetFirmInfo(ListView.Selected));
+        DeleteVacancy(GetVacancyInfo(ListView.Selected));
         ListView.Selected.Delete;
         IsFileSaved := False;
     End
@@ -221,94 +224,116 @@ Begin
         ListView.ClearSelection;
 End;
 
-procedure TFirmListForm.ButtonSearchClick(Sender: TObject);
+procedure TVacancyListForm.ButtonFindCandidatesClick(Sender: TObject);
 begin
-    SearchVacancyForm.Show;
+    Vacancy := GetVacancyInfo(ListView.Selected);
+    FindCandidatesForm.ShowModal;
 end;
 
-Procedure TFirmListForm.ListViewChange(Sender: TObject; Item: TListItem;
+Procedure TVacancyListForm.ButtonSearchClick(Sender: TObject);
+Begin
+    VacancySearchForm.Show;
+End;
+
+Procedure TVacancyListForm.ListViewChange(Sender: TObject; Item: TListItem;
   Change: TItemChange);
 Begin
     ButtonSearch.Enabled := ListView.Items.Count > 0;
     MMSaveFile.Enabled := ListView.Items.Count > 0;
 End;
 
-Procedure TFirmListForm.ListViewDblClick(Sender: TObject);
+Procedure TVacancyListForm.ListViewDblClick(Sender: TObject);
 Begin
-    OldInfo := GetFirmInfo(ListView.Selected);
+    OldInfo := GetVacancyInfo(ListView.Selected);
     IsEditing := True;
     VacancyForm.ShowModal;
 End;
 
-Procedure TFirmListForm.ListViewSelectItem(Sender: TObject; Item: TListItem;
+Procedure TVacancyListForm.ListViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 Begin
     ButtonDelete.Enabled := Selected;
     ButtonFindCandidates.Enabled := Selected;
 End;
 
-Procedure TFirmListForm.MMOpenFileClick(Sender: TObject);
+Procedure TVacancyListForm.MMOpenFileClick(Sender: TObject);
 Var
-    FirmFile: File Of TFirm;
-    FirmInfo: TFirm;
-    Head: PFirm;
+    InputFile: File Of TVacancy;
+    VacancyInfo: TVacancy;
+    Head: PVacancy;
+    Error: TError;
 Begin
     If OpenDialog.Execute Then
-        Try
-            Head := Nil;
-            AssignFile(FirmFile, OpenDialog.FileName);
-            Try
-                Reset(FirmFile);
-                While Not Eof(FirmFile) Do
-                Begin
-                    Read(FirmFile, FirmInfo);
-                    AddVacancy(FirmInfo, Head);
-                End;
-            Except
-
-            End;
-        Finally
-            CloseFile(FirmFile);
-        End;
-    If True Then
     Begin
-        DeleteFirmList(FirmHead);
-        FirmHead := Head;
-        While Head <> Nil Do
+        Error := CheckFileExtension(OpenDialog.FileName);
+        If Error = Correct Then
+            Try
+                Head := Nil;
+                AssignFile(InputFile, OpenDialog.FileName);
+                Try
+                    Reset(InputFile);
+                    While Not Eof(InputFile) Do
+                    Begin
+                        Read(InputFile, VacancyInfo);
+                        AddVacancy(VacancyInfo, Head);
+                    End;
+                Except
+                    Error := ErrCantOpenFile;
+                End;
+            Finally
+                CloseFile(InputFile);
+            End;
+        If Error = Correct Then
         Begin
-            AddVacancyToListView(Head^, ListView);
-            Head := Head.Next;
+            DeleteVacancyList(VacancyHead);
+            ClearListView(ListView);
+            VacancyHead := Head;
+            While Head <> Nil Do
+            Begin
+                AddVacancyToListView(Head^, ListView);
+                Head := Head.Next;
+            End;
+            IsFileSaved := True;
+        End
+        Else
+        Begin
+            DeleteVacancyList(Head);
+            ShowErrorMessage(Error);
         End;
-        IsFileSaved := True;
-    End
-    Else
-        DeleteFirmList(Head);
+    End;
 End;
 
-Procedure TFirmListForm.MMSaveFileClick(Sender: TObject);
+Procedure TVacancyListForm.MMSaveFileClick(Sender: TObject);
 Var
-    FirmFile: File Of TFirm;
-    Temp: PFirm;
+    OutputFile: File Of TVacancy;
+    Temp: PVacancy;
+    Error: TError;
 Begin
     If SaveDialog.Execute Then
-        Try
-            Temp := FirmHead;
-            AssignFile(FirmFile, SaveDialog.FileName);
+    Begin
+        Error := CheckFileExtension(SaveDialog.FileName);
+        If Error = Correct Then
             Try
-                Rewrite(FirmFile);
-                While Temp <> Nil Do
-                Begin
-                    Write(FirmFile, Temp^);
-                    Temp := Temp.Next;
+                Temp := VacancyHead;
+                AssignFile(OutputFile, SaveDialog.FileName);
+                Try
+                    Rewrite(OutputFile);
+                    While Temp <> Nil Do
+                    Begin
+                        Write(OutputFile, Temp^);
+                        Temp := Temp.Next;
+                    End;
+                Except
+                    Error := ErrCantOpenFile;
                 End;
-            Except
-
+            Finally
+                CloseFile(OutputFile);
             End;
-        Finally
-            CloseFile(FirmFile);
-        End;
-    If True Then
-        IsFileSaved := True;
+        If Error = Correct Then
+            IsFileSaved := True
+        Else
+            ShowErrorMessage(Error);
+    End;
 End;
 
 End.

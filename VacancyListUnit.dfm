@@ -1,7 +1,7 @@
-object FirmListForm: TFirmListForm
+object VacancyListForm: TVacancyListForm
   Left = 0
   Top = 0
-  Caption = #1057#1087#1080#1089#1086#1082' '#1092#1080#1088#1084
+  Caption = #1057#1087#1080#1089#1086#1082' '#1074#1072#1082#1072#1085#1089#1080#1081
   ClientHeight = 381
   ClientWidth = 759
   Color = clBtnFace
@@ -106,6 +106,7 @@ object FirmListForm: TFirmListForm
     Caption = #1055#1086#1076#1086#1073#1088#1072#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074
     Enabled = False
     TabOrder = 3
+    OnClick = ButtonFindCandidatesClick
   end
   object MainMenu: TMainMenu
     Left = 264

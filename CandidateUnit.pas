@@ -77,7 +77,8 @@ Begin
     // If IsEditing Then
     // CandidateListForm.EditVacancy(OldInfo, CandidateInfo)
     // Else
-    CandidateListForm.AddCandidate(CandidateInfo);
+    AddCandidate(CandidateInfo, CandidateHead);
+    AddCandidateToListView(CandidateInfo, CandidateListForm.ListView);
     Close;
 End;
 

@@ -102,8 +102,8 @@
             <Form>MainForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="FirmListUnit.pas">
-            <Form>FirmListForm</Form>
+        <DCCReference Include="VacancyListUnit.pas">
+            <Form>VacancyListForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="VacancyUnit.pas">
@@ -114,12 +114,16 @@
             <Form>CandidateListForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="SearchVacancyUnit.pas">
-            <Form>SearchVacancyForm</Form>
+        <DCCReference Include="VacancySearchUnit.pas">
+            <Form>VacancySearchForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="CandidateUnit.pas">
             <Form>CandidateForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="FindCandidatesUnit.pas">
+            <Form>FindCandidatesForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">

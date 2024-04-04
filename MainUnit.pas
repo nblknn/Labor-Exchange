@@ -5,7 +5,7 @@ Interface
 Uses
     Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
     System.Classes, Vcl.Graphics,
-    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus;
+    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, Vcl.ComCtrls;
 
 Type
     TError = (Correct, ErrIncorrectValue, ErrIncorrectFileExt, ErrCantOpenFile,
@@ -40,6 +40,8 @@ Const
       'Произошла ошибка при записи в файл!');
 
 Procedure ShowErrorMessage(Error: TError);
+Function CheckFileExtension(Path: String): TError;
+Procedure ClearListView(ListView: TListView);
 
 Var
     MainForm: TMainForm;
@@ -48,7 +50,7 @@ Implementation
 
 {$R *.dfm}
 
-Uses FirmListUnit, CandidateListUnit;
+Uses VacancyListUnit, CandidateListUnit;
 
 Procedure ShowErrorMessage(Error: TError);
 Begin
@@ -62,7 +64,23 @@ End;
 
 Procedure TMainForm.ButtonFirmListClick(Sender: TObject);
 Begin
-    FirmListForm.ShowModal;
+    VacancyListForm.ShowModal;
 End;
+
+Function CheckFileExtension(Path: String): TError;
+Var
+    Error: TError;
+Begin
+    Error := Correct;
+    If ExtractFileExt(Path) <> '.txt' Then
+        Error := ErrIncorrectFileExt;
+    CheckFileExtension := Error;
+End;
+
+Procedure ClearListView(ListView: TListView);
+begin
+    while ListView.Items.Count <> 0 do
+       ListView.Items[0].Delete;
+end;
 
 End.
