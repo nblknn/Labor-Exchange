@@ -45,6 +45,7 @@ object CandidateListForm: TCandidateListForm
     Enabled = False
     TabOrder = 2
     WordWrap = True
+    OnClick = ButtonDeficiteClick
   end
   object ButtonSearch: TButton
     Left = 392
@@ -106,6 +107,7 @@ object CandidateListForm: TCandidateListForm
     Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
+    ReadOnly = True
     RowSelect = True
     ParentFont = False
     TabOrder = 4
@@ -131,8 +133,18 @@ object CandidateListForm: TCandidateListForm
         OnClick = MMSaveFileClick
       end
     end
-    object MMInstruction: TMenuItem
-      Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
+    object MMHelp: TMenuItem
+      Caption = #1057#1087#1088#1072#1074#1082#1072
+      object MMInstruction: TMenuItem
+        Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
+        ShortCut = 112
+      end
+      object MMSeparator: TMenuItem
+        Caption = '-'
+      end
+      object MMProgramInfo: TMenuItem
+        Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+      end
     end
   end
   object OpenDialog: TOpenDialog

@@ -8,7 +8,8 @@ uses
   CandidateListUnit in 'CandidateListUnit.pas' {CandidateListForm},
   VacancySearchUnit in 'VacancySearchUnit.pas' {VacancySearchForm},
   CandidateUnit in 'CandidateUnit.pas' {CandidateForm},
-  FindCandidatesUnit in 'FindCandidatesUnit.pas' {FindCandidatesForm};
+  FindCandidatesUnit in 'FindCandidatesUnit.pas' {FindCandidatesForm},
+  DeficiteUnit in 'DeficiteUnit.pas' {DeficiteForm};
 
 {$R *.res}
 
@@ -22,5 +23,6 @@ begin
   Application.CreateForm(TVacancySearchForm, VacancySearchForm);
   Application.CreateForm(TCandidateForm, CandidateForm);
   Application.CreateForm(TFindCandidatesForm, FindCandidatesForm);
+  Application.CreateForm(TDeficiteForm, DeficiteForm);
   Application.Run;
 end.

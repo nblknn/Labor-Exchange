@@ -14,8 +14,9 @@ object MainForm: TMainForm
   Font.Style = []
   Menu = MainMenu
   Position = poScreenCenter
+  OnCloseQuery = FormCloseQuery
   TextHeight = 20
-  object Label1: TLabel
+  object LabelProgramName: TLabel
     Left = 72
     Top = 8
     Width = 104
@@ -46,20 +47,31 @@ object MainForm: TMainForm
     TabOrder = 1
     OnClick = ButtonCandidateListClick
   end
-  object ButtonDeficite: TButton
+  object ButtonExit: TButton
     Left = 47
     Top = 172
     Width = 153
     Height = 43
-    Caption = #1044#1077#1092#1080#1094#1080#1090#1085#1099#1077' '#1089#1087#1077#1094#1080#1072#1083#1080#1089#1090#1099
+    Caption = #1042#1099#1093#1086#1076
     TabOrder = 2
     WordWrap = True
+    OnClick = ButtonExitClick
   end
   object MainMenu: TMainMenu
     Left = 40
     Top = 40
-    object MMProgramInfo: TMenuItem
-      Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+    object MMHelp: TMenuItem
+      Caption = #1057#1087#1088#1072#1074#1082#1072
+      object MMInstruction: TMenuItem
+        Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
+        ShortCut = 112
+      end
+      object MMSeparator: TMenuItem
+        Caption = '-'
+      end
+      object MMProgramInfo: TMenuItem
+        Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+      end
     end
   end
 end

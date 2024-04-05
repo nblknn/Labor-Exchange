@@ -126,6 +126,10 @@
             <Form>FindCandidatesForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="DeficiteUnit.pas">
+            <Form>DeficiteForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

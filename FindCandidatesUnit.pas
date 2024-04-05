@@ -14,10 +14,13 @@ Type
         MainMenu: TMainMenu;
         MMFile: TMenuItem;
         MMSaveFile: TMenuItem;
-        MMInstruction: TMenuItem;
         ListViewVacancy: TListView;
         LabelCandidates: TLabel;
         ListViewCandidates: TListView;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    N3: TMenuItem;
+    N4: TMenuItem;
         Procedure FormShow(Sender: TObject);
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
     Private
@@ -34,7 +37,7 @@ Implementation
 
 {$R *.dfm}
 
-Uses DateUtils;
+Uses DateUtils, MainUnit;
 
 Var
     FoundCandidatesHead: PCandidate = Nil;
@@ -66,8 +69,9 @@ End;
 Procedure TFindCandidatesForm.FormClose(Sender: TObject;
   Var Action: TCloseAction);
 Begin
-    ListViewVacancy.Items[0].Delete;
-    ListViewCandidates.Items[0].Delete;
+    ClearListView(ListViewVacancy);
+    ClearListView(ListViewCandidates);
+    DeleteCandidateList(FoundCandidatesHead);
 End;
 
 Procedure TFindCandidatesForm.FormShow(Sender: TObject);

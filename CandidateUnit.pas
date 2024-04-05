@@ -4,45 +4,35 @@ Interface
 
 Uses
     Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-    System.Classes, Vcl.Graphics,
-    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.StdCtrls,
-    Vcl.WinXPickers,
-    Vcl.ComCtrls, VacancyUnit, MainUnit;
+    System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls,
+    Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Mask;
 
 Type
     TCandidateForm = Class(TForm)
-        LabelSurname: TLabel;
-        LabelName: TLabel;
-        LabelPatronymic: TLabel;
-        LabelSpeciality: TLabel;
         LabelHighEducation: TLabel;
         LabelBirthdate: TLabel;
-        LabelTitle: TLabel;
-        LabelSalary: TLabel;
-        EditSurname: TEdit;
-        EditPatronymic: TEdit;
-        EditName: TEdit;
-        EditSpeciality: TEdit;
-        EditTitle: TEdit;
-        EditSalary: TEdit;
         ButtonSave: TButton;
         ButtonCancel: TButton;
         CheckBoxHighEducation: TCheckBox;
-        MainMenu: TMainMenu;
-        MMInstruction: TMenuItem;
         DateTimePicker: TDateTimePicker;
+        LEditSurname: TLabeledEdit;
+        LEditName: TLabeledEdit;
+        LEditPatronymic: TLabeledEdit;
+        LEditSpeciality: TLabeledEdit;
+        LEditTitle: TLabeledEdit;
+        LEditSalary: TLabeledEdit;
         Procedure ButtonCancelClick(Sender: TObject);
         Procedure EditOnChange(Sender: TObject);
         Procedure ButtonSaveClick(Sender: TObject);
-        Procedure EditSurnameKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditNameKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditPatronymicKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditSpecialityKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditTitleKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditSalaryKeyPress(Sender: TObject; Var Key: Char);
         Procedure FormKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
         Procedure FormCreate(Sender: TObject);
+        Procedure LEditSurnameKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditNameKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditPatronymicKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditSpecialityKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditTitleKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditSalaryKeyPress(Sender: TObject; Var Key: Char);
     Private
         { Private declarations }
     Public
@@ -57,7 +47,7 @@ Implementation
 
 {$R *.dfm}
 
-Uses CandidateListUnit;
+Uses CandidateListUnit, MainUnit;
 
 Procedure TCandidateForm.ButtonSaveClick(Sender: TObject);
 Var
@@ -65,14 +55,14 @@ Var
 Begin
     With CandidateInfo Do
     Begin
-        Surname := EditSurname.Text;
-        Name := EditName.Text;
-        Patronymic := EditPatronymic.Text;
-        Speciality := EditSpeciality.Text;
+        Surname := LEditSurname.Text;
+        Name := LEditName.Text;
+        Patronymic := LEditPatronymic.Text;
+        Speciality := LEditSpeciality.Text;
         BirthDate := DateTimePicker.DateTime;
         HasHighEducation := CheckBoxHighEducation.Checked;
-        Title := EditTitle.Text;
-        Salary := StrToInt(EditSalary.Text);
+        Title := LEditTitle.Text;
+        Salary := StrToInt(LEditSalary.Text);
     End;
     // If IsEditing Then
     // CandidateListForm.EditVacancy(OldInfo, CandidateInfo)
@@ -84,40 +74,10 @@ End;
 
 Procedure TCandidateForm.EditOnChange(Sender: TObject);
 Begin
-    ButtonSave.Enabled := IsStrEditCorrect(EditSurname) And
-      IsStrEditCorrect(EditName) And IsStrEditCorrect(EditPatronymic) And
-      IsStrEditCorrect(EditSpeciality) And IsStrEditCorrect(EditTitle) And
-      IsIntEditCorrect(EditSalary, MINSALARY, MAXSALARY);
-End;
-
-Procedure TCandidateForm.EditNameKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditName, Key, MAXLEN);
-End;
-
-Procedure TCandidateForm.EditPatronymicKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditPatronymic, Key, MAXLEN);
-End;
-
-Procedure TCandidateForm.EditSalaryKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditSalary, Key, Length(IntToStr(MAXSALARY)));
-End;
-
-Procedure TCandidateForm.EditSpecialityKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditSpeciality, Key, MAXLEN);
-End;
-
-Procedure TCandidateForm.EditSurnameKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditSurname, Key, MAXLEN);
-End;
-
-Procedure TCandidateForm.EditTitleKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditTitle, Key, MAXLEN);
+    ButtonSave.Enabled := IsStrEditCorrect(LEditSurname) And
+      IsStrEditCorrect(LEditName) And IsStrEditCorrect(LEditPatronymic) And
+      IsStrEditCorrect(LEditSpeciality) And IsStrEditCorrect(LEditTitle) And
+      IsIntEditCorrect(LEditSalary, MINSALARY, MAXSALARY);
 End;
 
 Procedure TCandidateForm.FormCreate(Sender: TObject);
@@ -136,6 +96,38 @@ Begin
         Close
     Else If (Key = 13) And ButtonSave.Enabled Then
         ButtonSave.Click;
+End;
+
+Procedure TCandidateForm.LEditNameKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditName, Key, MAXLEN);
+End;
+
+Procedure TCandidateForm.LEditPatronymicKeyPress(Sender: TObject;
+  Var Key: Char);
+Begin
+    EditKeyPress(LEditPatronymic, Key, MAXLEN);
+End;
+
+Procedure TCandidateForm.LEditSalaryKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditSalary, Key, Length(IntToStr(MAXSALARY)));
+End;
+
+Procedure TCandidateForm.LEditSpecialityKeyPress(Sender: TObject;
+  Var Key: Char);
+Begin
+    EditKeyPress(LEditSpeciality, Key, MAXLEN);
+End;
+
+Procedure TCandidateForm.LEditSurnameKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditSurname, Key, MAXLEN);
+End;
+
+Procedure TCandidateForm.LEditTitleKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditTitle, Key, MAXLEN);
 End;
 
 Procedure TCandidateForm.ButtonCancelClick(Sender: TObject);

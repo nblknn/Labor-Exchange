@@ -4,9 +4,8 @@ Interface
 
 Uses
     Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-    System.Classes, Vcl.Graphics,
-    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ComCtrls, Vcl.StdCtrls,
-    MainUnit;
+    System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+    Vcl.Menus, Vcl.ComCtrls, Vcl.StdCtrls, MainUnit;
 
 Type
     PCandidate = ^TCandidate;
@@ -29,9 +28,12 @@ Type
         MMFile: TMenuItem;
         MMOpenFile: TMenuItem;
         MMSaveFile: TMenuItem;
-        MMInstruction: TMenuItem;
         OpenDialog: TOpenDialog;
         SaveDialog: TSaveDialog;
+        MMHelp: TMenuItem;
+        MMProgramInfo: TMenuItem;
+        MMSeparator: TMenuItem;
+        MMInstruction: TMenuItem;
         Procedure ButtonAddClick(Sender: TObject);
         Procedure FormKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
@@ -43,6 +45,7 @@ Type
           Selected: Boolean);
         Procedure MMOpenFileClick(Sender: TObject);
         Procedure MMSaveFileClick(Sender: TObject);
+        Procedure ButtonDeficiteClick(Sender: TObject);
     Private
         { Private declarations }
     Public
@@ -53,6 +56,7 @@ Procedure AddCandidateToListView(CandidateInfo: TCandidate;
   ListView: TListView);
 Procedure AddCandidate(CandidateInfo: TCandidate; Var Head: PCandidate);
 Procedure EditCandidate(OldInfo, NewInfo: TCandidate);
+Procedure DeleteCandidateList(Var Head: PCandidate);
 
 Var
     CandidateListForm: TCandidateListForm;
@@ -62,7 +66,7 @@ Implementation
 
 {$R *.dfm}
 
-Uses CandidateUnit;
+Uses CandidateUnit, DeficiteUnit;
 
 Const
     HIGHEDUCATION: Array [Boolean] Of String = ('Нет', 'Есть');
@@ -157,6 +161,7 @@ Begin
             Temp1 := Temp1.Next;
         Temp2 := Temp1;
         Temp2.Next := Temp1.Next.Next;
+        Temp1 := Temp1.Next;
     End
     Else
         CandidateHead := Temp1.Next;
@@ -199,6 +204,11 @@ Begin
     CandidateForm.ShowModal;
 End;
 
+Procedure TCandidateListForm.ButtonDeficiteClick(Sender: TObject);
+Begin
+    DeficiteForm.ShowModal;
+End;
+
 Procedure TCandidateListForm.ButtonDeleteClick(Sender: TObject);
 Var
     ButtonSelected: Integer;
@@ -229,6 +239,7 @@ Procedure TCandidateListForm.ListViewChange(Sender: TObject; Item: TListItem;
   Change: TItemChange);
 Begin
     ButtonSearch.Enabled := ListView.Items.Count > 0;
+    ButtonDeficite.Enabled := ListView.Items.Count > 0;
     MMSaveFile.Enabled := ListView.Items.Count > 0;
 End;
 

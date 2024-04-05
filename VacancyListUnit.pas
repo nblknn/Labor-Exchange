@@ -29,9 +29,12 @@ Type
         ButtonDelete: TButton;
         ButtonSearch: TButton;
         ButtonFindCandidates: TButton;
-        MMInstruction: TMenuItem;
         SaveDialog: TSaveDialog;
         OpenDialog: TOpenDialog;
+        N1: TMenuItem;
+        N2: TMenuItem;
+        N3: TMenuItem;
+        N4: TMenuItem;
         Procedure ButtonAddClick(Sender: TObject);
         Procedure ListViewSelectItem(Sender: TObject; Item: TListItem;
           Selected: Boolean);
@@ -44,7 +47,7 @@ Type
         Procedure MMSaveFileClick(Sender: TObject);
         Procedure MMOpenFileClick(Sender: TObject);
         Procedure ButtonSearchClick(Sender: TObject);
-    procedure ButtonFindCandidatesClick(Sender: TObject);
+        Procedure ButtonFindCandidatesClick(Sender: TObject);
     Private
         { Private declarations }
     Public
@@ -141,6 +144,7 @@ Begin
     Temp := VacancyHead;
     While Not AreVacanciesEqual(OldInfo, Temp^) Do
         Temp := Temp.Next;
+    NewInfo.Next := Temp.Next;
     Temp^ := NewInfo;
     EditVacancyInListView(NewInfo); // вызывать из вакансиюнит?
 End;
@@ -165,6 +169,7 @@ Begin
             Temp1 := Temp1.Next;
         Temp2 := Temp1;
         Temp2.Next := Temp1.Next.Next;
+        Temp1 := Temp1.Next;
     End
     Else
         VacancyHead := Temp1.Next;
@@ -224,11 +229,11 @@ Begin
         ListView.ClearSelection;
 End;
 
-procedure TVacancyListForm.ButtonFindCandidatesClick(Sender: TObject);
-begin
+Procedure TVacancyListForm.ButtonFindCandidatesClick(Sender: TObject);
+Begin
     Vacancy := GetVacancyInfo(ListView.Selected);
     FindCandidatesForm.ShowModal;
-end;
+End;
 
 Procedure TVacancyListForm.ButtonSearchClick(Sender: TObject);
 Begin

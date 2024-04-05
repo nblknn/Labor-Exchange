@@ -4,32 +4,22 @@ Interface
 
 Uses
     Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-    System.Classes, Vcl.Graphics,
-    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, Vcl.ExtCtrls,
-    Vcl.CheckLst, VacancyListUnit;
+    System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls,
+    Vcl.ExtCtrls, VacancyListUnit, Vcl.Mask;
 
 Type
     TVacancyForm = Class(TForm)
-        MainMenu: TMainMenu;
-        MMInstruction: TMenuItem;
-        LabelName: TLabel;
-        LabelSpeciality: TLabel;
-        LabelTitle: TLabel;
-        LabelVacationDays: TLabel;
         LabelHighEducation: TLabel;
-        LabelSalary: TLabel;
-        LabelMinAge: TLabel;
-        LabelMaxAge: TLabel;
-        EditName: TEdit;
-        EditSalary: TEdit;
-        EditTitle: TEdit;
-        EditSpeciality: TEdit;
-        EditVacationDays: TEdit;
-        EditMinAge: TEdit;
-        EditMaxAge: TEdit;
         ButtonSave: TButton;
         ButtonCancel: TButton;
         CheckBoxHighEducation: TCheckBox;
+        LEditFirmName: TLabeledEdit;
+        LEditSpeciality: TLabeledEdit;
+        LEditTitle: TLabeledEdit;
+        LEditSalary: TLabeledEdit;
+        LEditVacationDays: TLabeledEdit;
+        LEditMinAge: TLabeledEdit;
+        LEditMaxAge: TLabeledEdit;
         Procedure ButtonCancelClick(Sender: TObject);
         Procedure FormKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
@@ -37,24 +27,19 @@ Type
         Procedure ClearEdits();
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
         Procedure ButtonSaveClick(Sender: TObject);
-        Procedure EditNameKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditSpecialityKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditTitleKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditSalaryKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditVacationDaysKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditMinAgeKeyPress(Sender: TObject; Var Key: Char);
-        Procedure EditMaxAgeKeyPress(Sender: TObject; Var Key: Char);
         Procedure FormShow(Sender: TObject);
+        Procedure LEditFirmNameKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditSpecialityKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditTitleKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditSalaryKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditVacationDaysKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditMinAgeKeyPress(Sender: TObject; Var Key: Char);
+        Procedure LEditMaxAgeKeyPress(Sender: TObject; Var Key: Char);
     Private
         { Private declarations }
     Public
         { Public declarations }
     End;
-
-Function IsStrEditCorrect(Edit: TEdit): Boolean;
-Function IsIntEditCorrect(Edit: TEdit;
-  Const MINVALUE, MAXVALUE: Integer): Boolean;
-Procedure EditKeyPress(Edit: TEdit; Var Key: Char; Const MAXLENGTH: Integer);
 
 Var
     VacancyForm: TVacancyForm;
@@ -67,81 +52,21 @@ Implementation
 
 Uses MainUnit;
 
-Const
-    NULL = #0;
-    BACKSPACE = #8;
-
-Function IsStrEditCorrect(Edit: TEdit): Boolean;
-Begin
-    IsStrEditCorrect := (Length(Edit.Text) > 0) And
-      (Length(Edit.Text) < MAXLEN + 1);
-End;
-
-Function IsIntEditCorrect(Edit: TEdit;
-  Const MINVALUE, MAXVALUE: Integer): Boolean;
-Var
-    Value: Integer;
-Begin
-    IsIntEditCorrect := TryStrToInt(Edit.Text, Value) And (Value > MINVALUE - 1)
-      And (Value < MAXVALUE + 1);
-End;
-
 Function IsAgeRangeCorrect(): Boolean;
 Begin
     With VacancyForm Do
-        IsAgeRangeCorrect := IsIntEditCorrect(EditMinAge, MINWORKAGE,
-          MAXWORKAGE) And IsIntEditCorrect(EditMaxAge, MINWORKAGE, MAXWORKAGE)
-          And Not(StrToInt(EditMinAge.Text) > StrToInt(EditMaxAge.Text));
+        IsAgeRangeCorrect := IsIntEditCorrect(LEditMinAge, MINWORKAGE,
+          MAXWORKAGE) And IsIntEditCorrect(LEditMaxAge, MINWORKAGE, MAXWORKAGE)
+          And Not(StrToInt(LEditMinAge.Text) > StrToInt(LEditMaxAge.Text));
 End;
 
 Procedure TVacancyForm.EditOnChange(Sender: TObject);
 Begin
-    ButtonSave.Enabled := IsStrEditCorrect(EditName) And
-      IsStrEditCorrect(EditSpeciality) And IsStrEditCorrect(EditTitle) And
-      IsIntEditCorrect(EditSalary, MINSALARY, MAXSALARY) And
-      IsIntEditCorrect(EditVacationDays, MINVACATION, MAXVACATION) And
+    ButtonSave.Enabled := IsStrEditCorrect(LEditFirmName) And
+      IsStrEditCorrect(LEditSpeciality) And IsStrEditCorrect(LEditTitle) And
+      IsIntEditCorrect(LEditSalary, MINSALARY, MAXSALARY) And
+      IsIntEditCorrect(LEditVacationDays, MINVACATION, MAXVACATION) And
       IsAgeRangeCorrect();
-End;
-
-Procedure EditKeyPress(Edit: TEdit; Var Key: Char; Const MAXLENGTH: Integer);
-Begin
-    If (Key <> BACKSPACE) And Not(Length(Edit.Text) < MAXLENGTH) Then
-        Key := NULL;
-End;
-
-Procedure TVacancyForm.EditMaxAgeKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditMaxAge, Key, Length(IntToStr(MAXWORKAGE)));
-End;
-
-Procedure TVacancyForm.EditMinAgeKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditMinAge, Key, Length(IntToStr(MAXWORKAGE)));
-End;
-
-Procedure TVacancyForm.EditNameKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditName, Key, MAXLEN);
-End;
-
-Procedure TVacancyForm.EditSalaryKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditSalary, Key, Length(IntToStr(MAXSALARY)));
-End;
-
-Procedure TVacancyForm.EditSpecialityKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditSpeciality, Key, MAXLEN);
-End;
-
-Procedure TVacancyForm.EditTitleKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditTitle, Key, MAXLEN);
-End;
-
-Procedure TVacancyForm.EditVacationDaysKeyPress(Sender: TObject; Var Key: Char);
-Begin
-    EditKeyPress(EditVacationDays, Key, Length(IntToStr(MAXVACATION)));
 End;
 
 Procedure TVacancyForm.ButtonSaveClick(Sender: TObject);
@@ -150,20 +75,17 @@ Var
 Begin
     With NewInfo Do
     Begin
-        FirmName := EditName.Text;
-        Speciality := EditSpeciality.Text;
-        Title := EditTitle.Text;
-        Salary := StrToInt(EditSalary.Text);
-        VacationDays := StrToInt(EditVacationDays.Text);
+        FirmName := LEditFirmName.Text;
+        Speciality := LEditSpeciality.Text;
+        Title := LEditTitle.Text;
+        Salary := StrToInt(LEditSalary.Text);
+        VacationDays := StrToInt(LEditVacationDays.Text);
         IsHighEducationRequired := CheckBoxHighEducation.Checked;
-        MinAge := StrToInt(EditMinAge.Text);
-        MaxAge := StrToInt(EditMaxAge.Text);
+        MinAge := StrToInt(LEditMinAge.Text);
+        MaxAge := StrToInt(LEditMaxAge.Text);
     End;
     If IsEditing Then
-    Begin
-        NewInfo.Next := OldInfo.Next;
-        EditVacancy(OldInfo, NewInfo);
-    End
+        EditVacancy(OldInfo, NewInfo)
     Else
     Begin
         AddVacancy(NewInfo, VacancyHead);
@@ -174,14 +96,14 @@ End;
 
 Procedure TVacancyForm.ClearEdits();
 Begin
-    EditName.Text := '';
-    EditSpeciality.Text := '';
-    EditTitle.Text := '';
-    EditSalary.Text := '';
-    EditVacationDays.Text := '';
+    LEditFirmName.Text := '';
+    LEditSpeciality.Text := '';
+    LEditTitle.Text := '';
+    LEditSalary.Text := '';
+    LEditVacationDays.Text := '';
     CheckBoxHighEducation.Checked := False;
-    EditMinAge.Text := '';
-    EditMaxAge.Text := '';
+    LEditMinAge.Text := '';
+    LEditMaxAge.Text := '';
 End;
 
 Procedure TVacancyForm.ButtonCancelClick(Sender: TObject);
@@ -193,7 +115,7 @@ Procedure TVacancyForm.FormClose(Sender: TObject; Var Action: TCloseAction);
 Begin
     IsEditing := False;
     ClearEdits();
-    EditName.SetFocus;
+    LEditFirmName.SetFocus;
 End;
 
 Procedure TVacancyForm.FormKeyDown(Sender: TObject; Var Key: Word;
@@ -210,15 +132,51 @@ Begin
     If IsEditing Then
         With OldInfo Do
         Begin
-            EditName.Text := Name;
-            EditSpeciality.Text := Speciality;
-            EditTitle.Text := Title;
-            EditSalary.Text := IntToStr(Salary);
-            EditVacationDays.Text := IntToStr(VacationDays);
+            LEditFirmName.Text := FirmName;
+            LEditSpeciality.Text := Speciality;
+            LEditTitle.Text := Title;
+            LEditSalary.Text := IntToStr(Salary);
+            LEditVacationDays.Text := IntToStr(VacationDays);
             CheckBoxHighEducation.Checked := IsHighEducationRequired;
-            EditMinAge.Text := IntToStr(MinAge);
-            EditMaxAge.Text := IntToStr(MaxAge);
+            LEditMinAge.Text := IntToStr(MinAge);
+            LEditMaxAge.Text := IntToStr(MaxAge);
         End;
+End;
+
+Procedure TVacancyForm.LEditFirmNameKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditFirmName, Key, MAXLEN);
+End;
+
+Procedure TVacancyForm.LEditMaxAgeKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditMaxAge, Key, Length(IntToStr(MAXWORKAGE)));
+End;
+
+Procedure TVacancyForm.LEditMinAgeKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditMinAge, Key, Length(IntToStr(MAXWORKAGE)));
+End;
+
+Procedure TVacancyForm.LEditSalaryKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditSalary, Key, Length(IntToStr(MAXSALARY)));
+End;
+
+Procedure TVacancyForm.LEditSpecialityKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditSpeciality, Key, MAXLEN);
+End;
+
+Procedure TVacancyForm.LEditTitleKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    EditKeyPress(LEditTitle, Key, MAXLEN);
+End;
+
+Procedure TVacancyForm.LEditVacationDaysKeyPress(Sender: TObject;
+  Var Key: Char);
+Begin
+    EditKeyPress(LEditVacationDays, Key, Length(IntToStr(MAXVACATION)));
 End;
 
 End.
