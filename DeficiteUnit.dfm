@@ -98,6 +98,7 @@ object DeficiteForm: TDeficiteForm
         Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
         Enabled = False
         ShortCut = 16467
+        OnClick = MMSaveFileClick
       end
     end
     object N1: TMenuItem

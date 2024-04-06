@@ -15,6 +15,7 @@ object CandidateListForm: TCandidateListForm
   KeyPreview = True
   Menu = MainMenu
   Position = poScreenCenter
+  OnClose = FormClose
   OnKeyDown = FormKeyDown
   TextHeight = 20
   object ButtonAdd: TButton
@@ -117,8 +118,8 @@ object CandidateListForm: TCandidateListForm
     OnSelectItem = ListViewSelectItem
   end
   object MainMenu: TMainMenu
-    Left = 264
-    Top = 65528
+    Left = 312
+    Top = 144
     object MMFile: TMenuItem
       Caption = #1060#1072#1081#1083
       object MMOpenFile: TMenuItem

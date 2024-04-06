@@ -24,7 +24,7 @@ Type
         Procedure FormKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
         Procedure EditOnChange(Sender: TObject);
-        Procedure ClearEdits();
+        Procedure ClearControls();
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
         Procedure ButtonSaveClick(Sender: TObject);
         Procedure FormShow(Sender: TObject);
@@ -44,7 +44,7 @@ Type
 Var
     VacancyForm: TVacancyForm;
     IsEditing: Boolean;
-    OldInfo: TVacancy;
+    OldInfo: TVacancyInfo;
 
 Implementation
 
@@ -71,7 +71,7 @@ End;
 
 Procedure TVacancyForm.ButtonSaveClick(Sender: TObject);
 Var
-    NewInfo: TVacancy;
+    NewInfo: TVacancyInfo;
 Begin
     With NewInfo Do
     Begin
@@ -94,7 +94,7 @@ Begin
     Close;
 End;
 
-Procedure TVacancyForm.ClearEdits();
+Procedure TVacancyForm.ClearControls();
 Begin
     LEditFirmName.Text := '';
     LEditSpeciality.Text := '';
@@ -114,7 +114,7 @@ End;
 Procedure TVacancyForm.FormClose(Sender: TObject; Var Action: TCloseAction);
 Begin
     IsEditing := False;
-    ClearEdits();
+    ClearControls();
     LEditFirmName.SetFocus;
 End;
 

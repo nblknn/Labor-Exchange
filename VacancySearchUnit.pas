@@ -10,18 +10,20 @@ Uses
 
 Type
     TVacancySearchForm = Class(TForm)
-        Edit1: TEdit;
-        Button1: TButton;
-        Button2: TButton;
-        Button3: TButton;
-        ComboBox1: TComboBox;
-        Label1: TLabel;
-        Label2: TLabel;
-        Procedure ComboBox1Select(Sender: TObject);
-        Procedure Button2Click(Sender: TObject);
-        Procedure Edit1Change(Sender: TObject);
-        Procedure Button1Click(Sender: TObject);
-        Procedure Button3Click(Sender: TObject);
+        EditValue: TEdit;
+        ButtonSearch: TButton;
+        ButtonCancel: TButton;
+        ButtonNext: TButton;
+        ComboBoxParam: TComboBox;
+        LabelSearch: TLabel;
+        LabelInfo: TLabel;
+        Procedure ComboBoxParamSelect(Sender: TObject);
+        Procedure ButtonCancelClick(Sender: TObject);
+        Procedure EditValueChange(Sender: TObject);
+        Procedure ButtonSearchClick(Sender: TObject);
+        Procedure ButtonNextClick(Sender: TObject);
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure EditValueKeyPress(Sender: TObject; Var Key: Char);
     Private
         { Private declarations }
     Public
@@ -43,18 +45,18 @@ Type
 
 Function AreFirmNamesEqual(Name: ShortString; Vacancy: PVacancy): Boolean;
 Begin
-    AreFirmNamesEqual := AnsiUpperCase(Vacancy.FirmName) = AnsiUpperCase(Name);
+    AreFirmNamesEqual := AnsiUpperCase(Vacancy.Info.FirmName) = AnsiUpperCase(Name);
 End;
 
 Function AreSpecialitiesEqual(Spec: ShortString; Vacancy: PVacancy): Boolean;
 Begin
-    AreSpecialitiesEqual := AnsiUpperCase(Vacancy.Speciality)
+    AreSpecialitiesEqual := AnsiUpperCase(Vacancy.Info.Speciality)
       = AnsiUpperCase(Spec);
 End;
 
 Function AreTitlesEqual(Title: ShortString; Vacancy: PVacancy): Boolean;
 Begin
-    AreTitlesEqual := AnsiUpperCase(Vacancy.Title) = AnsiUpperCase(Title);
+    AreTitlesEqual := AnsiUpperCase(Vacancy.Info.Title) = AnsiUpperCase(Title);
 End;
 
 Const
@@ -88,24 +90,23 @@ Begin
     End;
 End;
 
-Procedure TVacancySearchForm.Button1Click(Sender: TObject);
+Procedure TVacancySearchForm.ButtonSearchClick(Sender: TObject);
 Begin
     FoundIndexes := Nil;
-    Search(Edit1.Text);
+    Search(EditValue.Text);
     Count := Length(FoundIndexes);
     If Count = 0 Then
-        Label2.Caption := 'Вакансии не были найдены.'
+        LabelInfo.Caption := 'Вакансии не были найдены.'
     Else
     Begin
-        Label2.Caption := 'Было найдено ' + IntToStr(Count) + ' вакансий.';
-        Button3.Enabled := True;
+        LabelInfo.Caption := 'Было найдено ' + IntToStr(Count) + ' вакансий.';
+        ButtonNext.Enabled := True;
     End;
-    Label2.Visible := True;
+    LabelInfo.Visible := True;
 End;
 
-Procedure TVacancySearchForm.Button2Click(Sender: TObject);
+Procedure TVacancySearchForm.ButtonCancelClick(Sender: TObject);
 Begin
-    FoundIndexes := Nil;
     Close;
 End;
 
@@ -114,7 +115,7 @@ Begin
     VacancyListForm.ListView.Selected := VacancyListForm.ListView.Items[I];
 End;
 
-Procedure TVacancySearchForm.Button3Click(Sender: TObject);
+Procedure TVacancySearchForm.ButtonNextClick(Sender: TObject);
 Begin
     SelectVacancyInListView(FoundIndexes[Length(FoundIndexes) - Count]);
     If Count > 1 Then
@@ -123,15 +124,33 @@ Begin
         Count := Length(FoundIndexes);
 End;
 
-Procedure TVacancySearchForm.ComboBox1Select(Sender: TObject);
+Procedure TVacancySearchForm.ComboBoxParamSelect(Sender: TObject);
 Begin
-    SearchParam := TSearchParameter(ComboBox1.ItemIndex);
-    Edit1.Enabled := True;
+    SearchParam := TSearchParameter(ComboBoxParam.ItemIndex);
+    EditValue.Enabled := True;
 End;
 
-Procedure TVacancySearchForm.Edit1Change(Sender: TObject);
+Procedure TVacancySearchForm.EditValueChange(Sender: TObject);
 Begin
-    Button1.Enabled := Not(Length(Edit1.Text) > MAXLEN);
+    ButtonSearch.Enabled := Not(Length(EditValue.Text) > MAXLEN) And
+      (EditValue.Text <> '');
+End;
+
+Procedure TVacancySearchForm.EditValueKeyPress(Sender: TObject; Var Key: Char);
+Begin
+    If Not(Length(EditValue.Text) < MAXLEN) And (Key <> BACKSPACE) Then
+        Key := NULL;
+End;
+
+Procedure TVacancySearchForm.FormClose(Sender: TObject;
+  Var Action: TCloseAction);
+Begin
+    EditValue.Text := '';
+    EditValue.Enabled := False;
+    ComboBoxParam.ClearSelection;
+    ComboBoxParam.SetFocus;
+    LabelInfo.Visible := False;
+    FoundIndexes := Nil;
 End;
 
 End.

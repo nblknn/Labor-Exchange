@@ -39,6 +39,8 @@ Const
     MAXVACATION = 99;
     MINWORKAGE = 14;
     MAXWORKAGE = 99;
+    NULL = #0;
+    BACKSPACE = #8;
     ERRORMESSAGES: Array [TError] Of PWideChar = ('',
       'Проверьте корректность данных!', 'Файл должен иметь разрешение *.txt!',
       'Произошла ошибка при открытии файла!',
@@ -61,10 +63,6 @@ Implementation
 {$R *.dfm}
 
 Uses VacancyListUnit, CandidateListUnit;
-
-Const
-    NULL = #0;
-    BACKSPACE = #8;
 
 Procedure ShowErrorMessage(Error: TError);
 Begin
@@ -101,6 +99,7 @@ End;
 
 Procedure TMainForm.ButtonCandidateListClick(Sender: TObject);
 Begin
+    MainForm.Visible := False;
     CandidateListForm.ShowModal;
 End;
 
@@ -111,12 +110,44 @@ End;
 
 Procedure TMainForm.ButtonFirmListClick(Sender: TObject);
 Begin
+    MainForm.Visible := False;
     VacancyListForm.ShowModal;
 End;
 
 Procedure TMainForm.FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
+Var
+    ButtonSelected: Integer;
 Begin
-    // fill
+    If Not IsVacancyListSaved Then
+    Begin
+        ButtonSelected := Application.MessageBox
+          ('Вы хотите сохранить изменения в списке вакансий?', 'Выход',
+          MB_YESNOCANCEL + MB_ICONQUESTION);
+        If ButtonSelected = MrYes Then
+        Begin
+            VacancyListForm.MMSaveFile.Click;
+            If Not IsVacancyListSaved Then
+                Close;
+        End
+        Else
+            CanClose := IsCandidateListSaved And (ButtonSelected = MrNo);
+        IsVacancyListSaved := True; //костыли
+    End;
+    If Not IsCandidateListSaved Then
+    Begin
+        ButtonSelected := Application.MessageBox
+          ('Вы хотите сохранить изменения в списке кандидатов?', 'Выход',
+          MB_YESNOCANCEL + MB_ICONQUESTION);
+        If ButtonSelected = MrYes Then
+        Begin
+            CandidateListForm.MMSaveFile.Click;
+            If Not IsCandidateListSaved Then
+                Close;
+        End
+        Else
+            CanClose := ButtonSelected = MrNo;
+        IsCandidateListSaved := True;
+    End;
 End;
 
 Function CheckFileExtension(Path: String): TError;

@@ -10,11 +10,15 @@ Uses
 Type
     PCandidate = ^TCandidate;
 
-    TCandidate = Record
+    TCandidateInfo = Record
         Surname, Name, Patronymic, Speciality, Title: String[MAXLEN];
         BirthDate: TDateTime;
         HasHighEducation: Boolean;
         Salary: Integer;
+    End;
+
+    TCandidate = Record
+        Info: TCandidateInfo;
         Next: PCandidate;
     End;
 
@@ -46,21 +50,24 @@ Type
         Procedure MMOpenFileClick(Sender: TObject);
         Procedure MMSaveFileClick(Sender: TObject);
         Procedure ButtonDeficiteClick(Sender: TObject);
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
     Private
         { Private declarations }
     Public
         { Public declarations }
     End;
 
-Procedure AddCandidateToListView(CandidateInfo: TCandidate;
+Procedure AddCandidateToListView(CandidateInfo: TCandidateInfo;
   ListView: TListView);
-Procedure AddCandidate(CandidateInfo: TCandidate; Var Head: PCandidate);
-Procedure EditCandidate(OldInfo, NewInfo: TCandidate);
+Procedure AddCandidate(CandidateInfo: TCandidateInfo; Var Head: PCandidate);
+Procedure EditCandidate(OldInfo, NewInfo: TCandidateInfo);
 Procedure DeleteCandidateList(Var Head: PCandidate);
+Function SaveCandidateListToFile(Head: PCandidate; Path: String): TError;
 
 Var
     CandidateListForm: TCandidateListForm;
     CandidateHead: PCandidate = Nil;
+    IsCandidateListSaved: Boolean = True;
 
 Implementation
 
@@ -71,10 +78,7 @@ Uses CandidateUnit, DeficiteUnit;
 Const
     HIGHEDUCATION: Array [Boolean] Of String = ('Íåò', 'Åñòü');
 
-Var
-    IsFileSaved: Boolean;
-
-Procedure AddCandidateToListView(CandidateInfo: TCandidate;
+Procedure AddCandidateToListView(CandidateInfo: TCandidateInfo;
   ListView: TListView);
 Var
     NewItem: TListItem;
@@ -91,27 +95,28 @@ Begin
         Add(Title);
         Add(IntToStr(Salary));
     End;
+    IsCandidateListSaved := False;
 End;
 
-Procedure AddCandidate(CandidateInfo: TCandidate; Var Head: PCandidate);
+Procedure AddCandidate(CandidateInfo: TCandidateInfo; Var Head: PCandidate);
 Var
     NewCandidate, Temp: PCandidate;
 Begin
     NewCandidate := New(PCandidate);
-    NewCandidate^ := CandidateInfo;
+    NewCandidate^.Info := CandidateInfo;
     NewCandidate^.Next := Nil;
     If Head = Nil Then
         Head := NewCandidate
     Else
     Begin
         Temp := Head;
-        While Temp.Next <> Nil Do
-            Temp := Temp.Next;
-        Temp.Next := NewCandidate;
+        While Temp^.Next <> Nil Do
+            Temp := Temp^.Next;
+        Temp^.Next := NewCandidate;
     End;
 End;
 
-Function AreCandidatesEqual(Candidate1, Candidate2: TCandidate): Boolean;
+Function AreCandidatesEqual(Candidate1, Candidate2: TCandidateInfo): Boolean;
 Begin
     AreCandidatesEqual := (Candidate1.Surname = Candidate2.Surname) And
       (Candidate1.Name = Candidate2.Name) And
@@ -123,7 +128,7 @@ Begin
       (Candidate1.Salary = Candidate2.Salary);
 End;
 
-Procedure EditCandidateInListView(NewInfo: TCandidate);
+Procedure EditCandidateInListView(NewInfo: TCandidateInfo);
 Begin
     With CandidateListForm.ListView.Selected, NewInfo Do
     Begin
@@ -136,35 +141,35 @@ Begin
         SubItems[5] := Title;
         SubItems[6] := IntToStr(Salary);
     End;
-    IsFileSaved := False;
+    IsCandidateListSaved := False;
 End;
 
-Procedure EditCandidate(OldInfo, NewInfo: TCandidate);
+Procedure EditCandidate(OldInfo, NewInfo: TCandidateInfo);
 Var
     Temp: PCandidate;
 Begin
     Temp := CandidateHead;
-    While Not AreCandidatesEqual(OldInfo, Temp^) Do
-        Temp := Temp.Next;
-    Temp^ := NewInfo;
+    While Not AreCandidatesEqual(OldInfo, Temp^.Info) Do
+        Temp := Temp^.Next;
+    Temp^.Info := NewInfo;
     EditCandidateInListView(NewInfo); // âûçûâàòü èç candidateþíèò?
 End;
 
-Procedure DeleteCandidate(CandidateInfo: TCandidate);
+Procedure DeleteCandidate(CandidateInfo: TCandidateInfo);
 Var
     Temp1, Temp2: PCandidate;
 Begin
     Temp1 := CandidateHead;
-    If Not AreCandidatesEqual(CandidateInfo, Temp1^) Then
+    If Not AreCandidatesEqual(CandidateInfo, Temp1^.Info) Then
     Begin
-        While Not AreCandidatesEqual(CandidateInfo, Temp1.Next^) Do
-            Temp1 := Temp1.Next;
+        While Not AreCandidatesEqual(CandidateInfo, Temp1^.Next^.Info) Do
+            Temp1 := Temp1^.Next;
         Temp2 := Temp1;
-        Temp2.Next := Temp1.Next.Next;
-        Temp1 := Temp1.Next;
+        Temp2^.Next := Temp1^.Next^.Next;
+        Temp1 := Temp1^.Next;
     End
     Else
-        CandidateHead := Temp1.Next;
+        CandidateHead := Temp1^.Next;
     Dispose(Temp1);
 End;
 
@@ -175,15 +180,15 @@ Begin
     Temp := Head;
     While Temp <> Nil Do
     Begin
-        Head := Head.Next;
+        Head := Head^.Next;
         Dispose(Temp);
         Temp := Head;
     End;
 End;
 
-Function GetCandidateInfo(Item: TListItem): TCandidate;
+Function GetCandidateInfo(Item: TListItem): TCandidateInfo;
 Var
-    Candidate: TCandidate;
+    Candidate: TCandidateInfo;
 Begin
     With Candidate, Item Do
     Begin
@@ -220,10 +225,16 @@ Begin
     Begin
         DeleteCandidate(GetCandidateInfo(ListView.Selected));
         ListView.Selected.Delete;
-        IsFileSaved := False;
+        IsCandidateListSaved := False;
     End
     Else
         ListView.ClearSelection;
+End;
+
+Procedure TCandidateListForm.FormClose(Sender: TObject;
+  Var Action: TCloseAction);
+Begin
+    MainForm.Visible := True;
 End;
 
 Procedure TCandidateListForm.FormKeyDown(Sender: TObject; Var Key: Word;
@@ -258,8 +269,8 @@ End;
 
 Procedure TCandidateListForm.MMOpenFileClick(Sender: TObject);
 Var
-    InputFile: File Of TCandidate;
-    CandidateInfo: TCandidate;
+    InputFile: File Of TCandidateInfo;
+    CandidateInfo: TCandidateInfo;
     Head: PCandidate;
     Error: TError;
 Begin
@@ -290,10 +301,10 @@ Begin
             CandidateHead := Head;
             While Head <> Nil Do
             Begin
-                AddCandidateToListView(Head^, ListView);
-                Head := Head.Next;
+                AddCandidateToListView(Head^.Info, ListView);
+                Head := Head^.Next;
             End;
-            IsFileSaved := True;
+            IsCandidateListSaved := True;
         End
         Else
         Begin
@@ -303,37 +314,40 @@ Begin
     End;
 End;
 
-Procedure TCandidateListForm.MMSaveFileClick(Sender: TObject);
+Function SaveCandidateListToFile(Head: PCandidate; Path: String): TError;
 Var
-    OutputFile: File Of TCandidate;
+    OutputFile: File Of TCandidateInfo;
     Temp: PCandidate;
     Error: TError;
 Begin
-    If SaveDialog.Execute Then
-    Begin
-        Error := CheckFileExtension(SaveDialog.FileName);
-        If Error = Correct Then
+    Error := CheckFileExtension(Path);
+    If Error = Correct Then
+        Try
+            Temp := Head;
+            AssignFile(OutputFile, Path);
             Try
-                Temp := CandidateHead;
-                AssignFile(OutputFile, SaveDialog.FileName);
-                Try
-                    Rewrite(OutputFile);
-                    While Temp <> Nil Do
-                    Begin
-                        Write(OutputFile, Temp^);
-                        Temp := Temp.Next;
-                    End;
-                Except
-                    Error := ErrCantOpenFile;
+                Rewrite(OutputFile);
+                While Temp <> Nil Do
+                Begin
+                    Write(OutputFile, Temp^.Info);
+                    Temp := Temp^.Next;
                 End;
-            Finally
-                CloseFile(OutputFile);
+            Except
+                Error := ErrCantOpenFile;
             End;
-        If Error = Correct Then
-            IsFileSaved := True
-        Else
-            ShowErrorMessage(Error);
-    End;
+        Finally
+            CloseFile(OutputFile);
+        End;
+    If Error <> Correct Then
+        ShowErrorMessage(Error);
+    SaveCandidateListToFile := Error;
+End;
+
+Procedure TCandidateListForm.MMSaveFileClick(Sender: TObject);
+Begin
+    If SaveDialog.Execute Then
+        IsCandidateListSaved := SaveCandidateListToFile(CandidateHead,
+          SaveDialog.FileName) = Correct;
 End;
 
 End.

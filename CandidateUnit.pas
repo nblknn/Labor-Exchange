@@ -5,7 +5,7 @@ Interface
 Uses
     Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
     System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls,
-    Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Mask;
+    Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Mask, CandidateListUnit;
 
 Type
     TCandidateForm = Class(TForm)
@@ -33,6 +33,9 @@ Type
         Procedure LEditSpecialityKeyPress(Sender: TObject; Var Key: Char);
         Procedure LEditTitleKeyPress(Sender: TObject; Var Key: Char);
         Procedure LEditSalaryKeyPress(Sender: TObject; Var Key: Char);
+        Procedure FormShow(Sender: TObject);
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure ClearControls();
     Private
         { Private declarations }
     Public
@@ -42,16 +45,17 @@ Type
 Var
     CandidateForm: TCandidateForm;
     IsEditing: Boolean;
+    OldInfo: TCandidateInfo;
 
 Implementation
 
 {$R *.dfm}
 
-Uses CandidateListUnit, MainUnit;
+Uses MainUnit;
 
 Procedure TCandidateForm.ButtonSaveClick(Sender: TObject);
 Var
-    CandidateInfo: TCandidate;
+    CandidateInfo: TCandidateInfo;
 Begin
     With CandidateInfo Do
     Begin
@@ -64,11 +68,13 @@ Begin
         Title := LEditTitle.Text;
         Salary := StrToInt(LEditSalary.Text);
     End;
-    // If IsEditing Then
-    // CandidateListForm.EditVacancy(OldInfo, CandidateInfo)
-    // Else
-    AddCandidate(CandidateInfo, CandidateHead);
-    AddCandidateToListView(CandidateInfo, CandidateListForm.ListView);
+    If IsEditing Then
+        EditCandidate(OldInfo, CandidateInfo)
+    Else
+    Begin
+        AddCandidate(CandidateInfo, CandidateHead);
+        AddCandidateToListView(CandidateInfo, CandidateListForm.ListView);
+    End;
     Close;
 End;
 
@@ -78,6 +84,25 @@ Begin
       IsStrEditCorrect(LEditName) And IsStrEditCorrect(LEditPatronymic) And
       IsStrEditCorrect(LEditSpeciality) And IsStrEditCorrect(LEditTitle) And
       IsIntEditCorrect(LEditSalary, MINSALARY, MAXSALARY);
+End;
+
+Procedure TCandidateForm.ClearControls();
+Begin
+    LEditSurname.Text := '';
+    LEditName.Text := '';
+    LEditPatronymic.Text := '';
+    DateTimePicker.DateTime := DateTimePicker.MaxDate;
+    LEditSpeciality.Text := '';
+    CheckBoxHighEducation.Checked := False;
+    LEditTitle.Text := '';
+    LEditSalary.Text := '';
+End;
+
+Procedure TCandidateForm.FormClose(Sender: TObject; Var Action: TCloseAction);
+Begin
+    IsEditing := False;
+    ClearControls();
+    LEditSurname.SetFocus;
 End;
 
 Procedure TCandidateForm.FormCreate(Sender: TObject);
@@ -96,6 +121,22 @@ Begin
         Close
     Else If (Key = 13) And ButtonSave.Enabled Then
         ButtonSave.Click;
+End;
+
+Procedure TCandidateForm.FormShow(Sender: TObject);
+Begin
+    If IsEditing Then
+        With OldInfo Do
+        Begin
+            LEditSurname.Text := Surname;
+            LEditName.Text := Name;
+            LEditPatronymic.Text := Patronymic;
+            DateTimePicker.DateTime := BirthDate;
+            LEditSpeciality.Text := Speciality;
+            CheckBoxHighEducation.Checked := HasHighEducation;
+            LEditTitle.Text := Title;
+            LEditSalary.Text := IntToStr(Salary);
+        End;
 End;
 
 Procedure TCandidateForm.LEditNameKeyPress(Sender: TObject; Var Key: Char);

@@ -4,8 +4,8 @@ object FindCandidatesForm: TFindCandidatesForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1055#1086#1076#1073#1086#1088' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074
-  ClientHeight = 397
-  ClientWidth = 760
+  ClientHeight = 388
+  ClientWidth = 758
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -149,6 +149,7 @@ object FindCandidatesForm: TFindCandidatesForm
         Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
         Enabled = False
         ShortCut = 16467
+        OnClick = MMSaveFileClick
       end
     end
     object N1: TMenuItem
@@ -164,5 +165,9 @@ object FindCandidatesForm: TFindCandidatesForm
         Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
       end
     end
+  end
+  object SaveDialog: TSaveDialog
+    Left = 632
+    Top = 224
   end
 end

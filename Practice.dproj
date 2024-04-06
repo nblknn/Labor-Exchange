@@ -115,7 +115,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="VacancySearchUnit.pas">
-            <Form>VacancySearchForm</Form>
+            <Form>SearchForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="CandidateUnit.pas">

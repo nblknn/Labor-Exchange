@@ -3,7 +3,7 @@ object VacancyListForm: TVacancyListForm
   Top = 0
   Caption = #1057#1087#1080#1089#1086#1082' '#1074#1072#1082#1072#1085#1089#1080#1081
   ClientHeight = 381
-  ClientWidth = 759
+  ClientWidth = 762
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,6 +13,7 @@ object VacancyListForm: TVacancyListForm
   KeyPreview = True
   Menu = MainMenu
   Position = poScreenCenter
+  OnClose = FormClose
   OnKeyDown = FormKeyDown
   TextHeight = 20
   object ListView: TListView

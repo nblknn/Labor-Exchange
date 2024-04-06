@@ -4,7 +4,7 @@ object MainForm: TMainForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1041#1080#1088#1078#1072' '#1090#1088#1091#1076#1072
-  ClientHeight = 225
+  ClientHeight = 222
   ClientWidth = 244
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

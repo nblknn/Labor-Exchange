@@ -11,11 +11,15 @@ Uses
 Type
     PVacancy = ^TVacancy;
 
-    TVacancy = Record
+    TVacancyInfo = Record
         FirmName, Speciality, Title: String[MAXLEN];
         Salary, VacationDays: Integer;
         IsHighEducationRequired: Boolean;
         MinAge, MaxAge: Integer;
+    End;
+
+    TVacancy = Record
+        Info: TVacancyInfo;
         Next: PVacancy;
     End;
 
@@ -48,19 +52,21 @@ Type
         Procedure MMOpenFileClick(Sender: TObject);
         Procedure ButtonSearchClick(Sender: TObject);
         Procedure ButtonFindCandidatesClick(Sender: TObject);
+        Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
     Private
         { Private declarations }
     Public
         { Public declarations }
     End;
 
-Procedure AddVacancyToListView(VacancyInfo: TVacancy; ListView: TListView);
-Procedure AddVacancy(VacancyInfo: TVacancy; Var Head: PVacancy);
-Procedure EditVacancy(OldInfo, NewInfo: TVacancy);
+Procedure AddVacancyToListView(VacancyInfo: TVacancyInfo; ListView: TListView);
+Procedure AddVacancy(VacancyInfo: TVacancyInfo; Var Head: PVacancy);
+Procedure EditVacancy(OldInfo, NewInfo: TVacancyInfo);
 
 Var
     VacancyListForm: TVacancyListForm;
     VacancyHead: PVacancy = Nil;
+    IsVacancyListSaved: Boolean = True;
 
 Implementation
 
@@ -69,13 +75,9 @@ Implementation
 Uses VacancyUnit, VacancySearchUnit, FindCandidatesUnit;
 
 Const
-    HIGHEDUCATIONREQUIRED: Array [Boolean] Of String = ('Не требуется',
-      'Требуется');
+    HIGHEDUREQUIRED: Array [Boolean] Of String = ('Не требуется', 'Требуется');
 
-Var
-    IsFileSaved: Boolean;
-
-Procedure AddVacancyToListView(VacancyInfo: TVacancy; ListView: TListView);
+Procedure AddVacancyToListView(VacancyInfo: TVacancyInfo; ListView: TListView);
 Var
     NewItem: TListItem;
 Begin
@@ -87,31 +89,31 @@ Begin
         Add(Title);
         Add(IntToStr(Salary));
         Add(IntToStr(VacationDays));
-        Add(HIGHEDUCATIONREQUIRED[IsHighEducationRequired]);
+        Add(HIGHEDUREQUIRED[IsHighEducationRequired]);
         Add(IntToStr(MinAge) + '-' + IntToStr(MaxAge));
     End;
-    IsFileSaved := False;
+    IsVacancyListSaved := False;
 End;
 
-Procedure AddVacancy(VacancyInfo: TVacancy; Var Head: PVacancy);
+Procedure AddVacancy(VacancyInfo: TVacancyInfo; Var Head: PVacancy);
 Var
-    NewFirm, Temp: PVacancy;
+    NewVacancy, Temp: PVacancy;
 Begin
-    NewFirm := New(PVacancy);
-    NewFirm^ := VacancyInfo;
-    NewFirm^.Next := Nil;
+    NewVacancy := New(PVacancy);
+    NewVacancy^.Info := VacancyInfo;
+    NewVacancy^.Next := Nil;
     If Head = Nil Then
-        Head := NewFirm
+        Head := NewVacancy
     Else
     Begin
         Temp := Head;
-        While Temp.Next <> Nil Do
-            Temp := Temp.Next;
-        Temp.Next := NewFirm;
+        While Temp^.Next <> Nil Do
+            Temp := Temp^.Next;
+        Temp^.Next := NewVacancy;
     End;
 End;
 
-Function AreVacanciesEqual(Vacancy1, Vacancy2: TVacancy): Boolean;
+Function AreVacanciesEqual(Vacancy1, Vacancy2: TVacancyInfo): Boolean;
 Begin
     AreVacanciesEqual := (Vacancy1.FirmName = Vacancy2.FirmName) And
       (Vacancy1.Speciality = Vacancy2.Speciality) And
@@ -122,7 +124,7 @@ Begin
       (Vacancy1.MaxAge = Vacancy2.MaxAge);
 End;
 
-Procedure EditVacancyInListView(NewInfo: TVacancy);
+Procedure EditVacancyInListView(NewInfo: TVacancyInfo);
 Begin
     With VacancyListForm.ListView.Selected, NewInfo Do
     Begin
@@ -131,22 +133,26 @@ Begin
         SubItems[1] := Title;
         SubItems[2] := IntToStr(Salary);
         SubItems[3] := IntToStr(VacationDays);
-        SubItems[4] := HIGHEDUCATIONREQUIRED[IsHighEducationRequired];
+        SubItems[4] := HIGHEDUREQUIRED[IsHighEducationRequired];
         SubItems[5] := IntToStr(MinAge) + '-' + IntToStr(MaxAge);
     End;
-    IsFileSaved := False;
+    IsVacancyListSaved := False;
 End;
 
-Procedure EditVacancy(OldInfo, NewInfo: TVacancy);
+Procedure EditVacancy(OldInfo, NewInfo: TVacancyInfo);
 Var
     Temp: PVacancy;
 Begin
     Temp := VacancyHead;
-    While Not AreVacanciesEqual(OldInfo, Temp^) Do
-        Temp := Temp.Next;
-    NewInfo.Next := Temp.Next;
-    Temp^ := NewInfo;
+    While Not AreVacanciesEqual(OldInfo, Temp^.Info) Do
+        Temp := Temp^.Next;
+    Temp^.Info := NewInfo;
     EditVacancyInListView(NewInfo); // вызывать из вакансиюнит?
+End;
+
+Procedure TVacancyListForm.FormClose(Sender: TObject; Var Action: TCloseAction);
+Begin
+    MainForm.Visible := True;
 End;
 
 Procedure TVacancyListForm.FormKeyDown(Sender: TObject; Var Key: Word;
@@ -158,21 +164,21 @@ Begin
         ButtonDelete.Click;
 End;
 
-Procedure DeleteVacancy(VacancyInfo: TVacancy);
+Procedure DeleteVacancy(VacancyInfo: TVacancyInfo);
 Var
     Temp1, Temp2: PVacancy;
 Begin
     Temp1 := VacancyHead;
-    If Not AreVacanciesEqual(VacancyInfo, Temp1^) Then
+    If Not AreVacanciesEqual(VacancyInfo, Temp1^.Info) Then
     Begin
-        While Not AreVacanciesEqual(VacancyInfo, Temp1.Next^) Do
-            Temp1 := Temp1.Next;
+        While Not AreVacanciesEqual(VacancyInfo, Temp1^.Next^.Info) Do
+            Temp1 := Temp1^.Next;
         Temp2 := Temp1;
-        Temp2.Next := Temp1.Next.Next;
-        Temp1 := Temp1.Next;
+        Temp2^.Next := Temp1^.Next^.Next;
+        Temp1 := Temp1^.Next;
     End
     Else
-        VacancyHead := Temp1.Next;
+        VacancyHead := Temp1^.Next;
     Dispose(Temp1);
 End;
 
@@ -183,7 +189,7 @@ Begin
     Temp := Head;
     While Temp <> Nil Do
     Begin
-        Head := Head.Next;
+        Head := Head^.Next;
         Dispose(Temp);
         Temp := Head;
     End;
@@ -194,9 +200,9 @@ Begin
     VacancyForm.ShowModal;
 End;
 
-Function GetVacancyInfo(Item: TListItem): TVacancy;
+Function GetVacancyInfo(Item: TListItem): TVacancyInfo;
 Var
-    Vacancy: TVacancy;
+    Vacancy: TVacancyInfo;
 Begin
     With Vacancy, Item Do
     Begin
@@ -205,7 +211,7 @@ Begin
         Title := SubItems[1];
         Salary := StrToInt(SubItems[2]);
         VacationDays := StrToInt(SubItems[3]);
-        IsHighEducationRequired := SubItems[4] = HIGHEDUCATIONREQUIRED[True];
+        IsHighEducationRequired := SubItems[4] = HIGHEDUREQUIRED[True];
         MinAge := StrToInt(Copy(SubItems[5], 1, Pos('-', SubItems[5]) - 1));
         MaxAge := StrToInt(Copy(SubItems[5], Pos('-', SubItems[5]) + 1, 2));
     End;
@@ -223,7 +229,7 @@ Begin
     Begin
         DeleteVacancy(GetVacancyInfo(ListView.Selected));
         ListView.Selected.Delete;
-        IsFileSaved := False;
+        IsVacancyListSaved := False;
     End
     Else
         ListView.ClearSelection;
@@ -263,8 +269,8 @@ End;
 
 Procedure TVacancyListForm.MMOpenFileClick(Sender: TObject);
 Var
-    InputFile: File Of TVacancy;
-    VacancyInfo: TVacancy;
+    InputFile: File Of TVacancyInfo;
+    VacancyInfo: TVacancyInfo;
     Head: PVacancy;
     Error: TError;
 Begin
@@ -295,10 +301,10 @@ Begin
             VacancyHead := Head;
             While Head <> Nil Do
             Begin
-                AddVacancyToListView(Head^, ListView);
-                Head := Head.Next;
+                AddVacancyToListView(Head^.Info, ListView);
+                Head := Head^.Next;
             End;
-            IsFileSaved := True;
+            IsVacancyListSaved := True;
         End
         Else
         Begin
@@ -310,7 +316,7 @@ End;
 
 Procedure TVacancyListForm.MMSaveFileClick(Sender: TObject);
 Var
-    OutputFile: File Of TVacancy;
+    OutputFile: File Of TVacancyInfo;
     Temp: PVacancy;
     Error: TError;
 Begin
@@ -325,8 +331,8 @@ Begin
                     Rewrite(OutputFile);
                     While Temp <> Nil Do
                     Begin
-                        Write(OutputFile, Temp^);
-                        Temp := Temp.Next;
+                        Write(OutputFile, Temp^.Info);
+                        Temp := Temp^.Next;
                     End;
                 Except
                     Error := ErrCantOpenFile;
@@ -335,7 +341,7 @@ Begin
                 CloseFile(OutputFile);
             End;
         If Error = Correct Then
-            IsFileSaved := True
+            IsVacancyListSaved := True
         Else
             ShowErrorMessage(Error);
     End;

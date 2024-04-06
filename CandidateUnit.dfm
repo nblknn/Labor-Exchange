@@ -14,8 +14,10 @@ object CandidateForm: TCandidateForm
   Font.Style = []
   KeyPreview = True
   Position = poScreenCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   TextHeight = 15
   object LabelHighEducation: TLabel
     Left = 8

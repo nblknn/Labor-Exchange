@@ -17,12 +17,14 @@ Type
         ListViewVacancy: TListView;
         LabelCandidates: TLabel;
         ListViewCandidates: TListView;
-    N1: TMenuItem;
-    N2: TMenuItem;
-    N3: TMenuItem;
-    N4: TMenuItem;
+        N1: TMenuItem;
+        N2: TMenuItem;
+        N3: TMenuItem;
+        N4: TMenuItem;
+        SaveDialog: TSaveDialog;
         Procedure FormShow(Sender: TObject);
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure MMSaveFileClick(Sender: TObject);
     Private
         { Private declarations }
     Public
@@ -31,7 +33,7 @@ Type
 
 Var
     FindCandidatesForm: TFindCandidatesForm;
-    Vacancy: TVacancy;
+    Vacancy: TVacancyInfo;
 
 Implementation
 
@@ -50,17 +52,19 @@ Begin
     Temp := CandidateHead;
     While Temp <> Nil Do
     Begin
-        CandidateAge := YearsBetween(Now, Temp.BirthDate);
-        If (AnsiUpperCase(Vacancy.Speciality) = AnsiUpperCase(Temp.Speciality))
-          And (AnsiUpperCase(Vacancy.Title) = AnsiUpperCase(Temp.Title)) And
-          (Vacancy.IsHighEducationRequired And Temp.HasHighEducation Or
+        CandidateAge := YearsBetween(Now, Temp^.Info.BirthDate);
+        If (AnsiUpperCase(Vacancy.Speciality)
+          = AnsiUpperCase(Temp^.Info.Speciality)) And
+          (AnsiUpperCase(Vacancy.Title) = AnsiUpperCase(Temp^.Info.Title)) And
+          (Vacancy.IsHighEducationRequired And Temp^.Info.HasHighEducation Or
           Not Vacancy.IsHighEducationRequired) And
           Not(Vacancy.MinAge > CandidateAge) And
           Not(Vacancy.MaxAge < CandidateAge) And
-          Not(Vacancy.Salary < Temp.Salary) Then
+          Not(Vacancy.Salary < Temp^.Info.Salary) Then
         Begin
-            AddCandidate(Temp^, FoundCandidatesHead);
-            AddCandidateToListView(Temp^, FindCandidatesForm.ListViewCandidates);
+            AddCandidate(Temp^.Info, FoundCandidatesHead);
+            AddCandidateToListView(Temp^.Info,
+              FindCandidatesForm.ListViewCandidates);
         End;
         Temp := Temp.Next;
     End;
@@ -79,6 +83,12 @@ Begin
     AddVacancyToListView(Vacancy, ListViewVacancy);
     FindCandidates();
     MMSaveFile.Enabled := ListViewCandidates.Items.Count > 0;
+End;
+
+Procedure TFindCandidatesForm.MMSaveFileClick(Sender: TObject);
+Begin
+    If SaveDialog.Execute Then
+        SaveCandidateListToFile(FoundCandidatesHead, SaveDialog.FileName);
 End;
 
 End.
