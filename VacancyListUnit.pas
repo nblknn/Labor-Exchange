@@ -35,10 +35,10 @@ Type
         ButtonFindCandidates: TButton;
         SaveDialog: TSaveDialog;
         OpenDialog: TOpenDialog;
-        N1: TMenuItem;
-        N2: TMenuItem;
-        N3: TMenuItem;
-        N4: TMenuItem;
+        MMHelp: TMenuItem;
+        MMProgramInfo: TMenuItem;
+        MMSeparator: TMenuItem;
+        MMInstruction: TMenuItem;
         Procedure ButtonAddClick(Sender: TObject);
         Procedure ListViewSelectItem(Sender: TObject; Item: TListItem;
           Selected: Boolean);
@@ -53,6 +53,10 @@ Type
         Procedure ButtonSearchClick(Sender: TObject);
         Procedure ButtonFindCandidatesClick(Sender: TObject);
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
+        Procedure MMInstructionClick(Sender: TObject);
+        Procedure MMProgramInfoClick(Sender: TObject);
+        Function FormHelp(Command: Word; Data: NativeInt;
+          Var CallHelp: Boolean): Boolean;
     Private
         { Private declarations }
     Public
@@ -155,6 +159,13 @@ Begin
     MainForm.Visible := True;
 End;
 
+Function TVacancyListForm.FormHelp(Command: Word; Data: NativeInt;
+  Var CallHelp: Boolean): Boolean;
+Begin
+    ShowInstruction();
+    CallHelp := False;
+End;
+
 Procedure TVacancyListForm.FormKeyDown(Sender: TObject; Var Key: Word;
   Shift: TShiftState);
 Begin
@@ -255,9 +266,12 @@ End;
 
 Procedure TVacancyListForm.ListViewDblClick(Sender: TObject);
 Begin
-    OldInfo := GetVacancyInfo(ListView.Selected);
-    IsEditing := True;
-    VacancyForm.ShowModal;
+    If ListView.Selected <> Nil Then
+    Begin
+        OldInfo := GetVacancyInfo(ListView.Selected);
+        IsEditing := True;
+        VacancyForm.ShowModal;
+    End;
 End;
 
 Procedure TVacancyListForm.ListViewSelectItem(Sender: TObject; Item: TListItem;
@@ -272,29 +286,29 @@ Var
     InputFile: File Of TVacancyInfo;
     VacancyInfo: TVacancyInfo;
     Head: PVacancy;
-    Error: TError;
+    IsCorrect: Boolean;
 Begin
-    If OpenDialog.Execute Then
+    IsCorrect := OpenDialog.Execute And IsFileExtCorrect(OpenDialog.FileName,
+      VACANCYFILEEXT);
+    If IsCorrect Then
     Begin
-        Error := CheckFileExtension(OpenDialog.FileName);
-        If Error = Correct Then
+        Try
+            Head := Nil;
+            AssignFile(InputFile, OpenDialog.FileName);
             Try
-                Head := Nil;
-                AssignFile(InputFile, OpenDialog.FileName);
-                Try
-                    Reset(InputFile);
-                    While Not Eof(InputFile) Do
-                    Begin
-                        Read(InputFile, VacancyInfo);
-                        AddVacancy(VacancyInfo, Head);
-                    End;
-                Except
-                    Error := ErrCantOpenFile;
+                Reset(InputFile);
+                While Not Eof(InputFile) Do
+                Begin
+                    Read(InputFile, VacancyInfo);
+                    AddVacancy(VacancyInfo, Head);
                 End;
-            Finally
-                CloseFile(InputFile);
+            Except
+                IsCorrect := False;
             End;
-        If Error = Correct Then
+        Finally
+            CloseFile(InputFile);
+        End;
+        If IsCorrect Then
         Begin
             DeleteVacancyList(VacancyHead);
             ClearListView(ListView);
@@ -309,7 +323,8 @@ Begin
         Else
         Begin
             DeleteVacancyList(Head);
-            ShowErrorMessage(Error);
+            Application.MessageBox('Произошла ошибка при открытии файла!',
+              'Ошибка', MB_ICONERROR);
         End;
     End;
 End;
@@ -318,33 +333,43 @@ Procedure TVacancyListForm.MMSaveFileClick(Sender: TObject);
 Var
     OutputFile: File Of TVacancyInfo;
     Temp: PVacancy;
-    Error: TError;
+    IsCorrect: Boolean;
 Begin
-    If SaveDialog.Execute Then
+    IsCorrect := SaveDialog.Execute And IsFileExtCorrect(SaveDialog.FileName,
+      VACANCYFILEEXT);
+    If IsCorrect Then
     Begin
-        Error := CheckFileExtension(SaveDialog.FileName);
-        If Error = Correct Then
+        Try
+            Temp := VacancyHead;
+            AssignFile(OutputFile, SaveDialog.FileName);
             Try
-                Temp := VacancyHead;
-                AssignFile(OutputFile, SaveDialog.FileName);
-                Try
-                    Rewrite(OutputFile);
-                    While Temp <> Nil Do
-                    Begin
-                        Write(OutputFile, Temp^.Info);
-                        Temp := Temp^.Next;
-                    End;
-                Except
-                    Error := ErrCantOpenFile;
+                Rewrite(OutputFile);
+                While Temp <> Nil Do
+                Begin
+                    Write(OutputFile, Temp^.Info);
+                    Temp := Temp^.Next;
                 End;
-            Finally
-                CloseFile(OutputFile);
+            Except
+                IsCorrect := False;
             End;
-        If Error = Correct Then
-            IsVacancyListSaved := True
-        Else
-            ShowErrorMessage(Error);
+        Finally
+            CloseFile(OutputFile);
+        End;
+        If Not IsCorrect Then
+            Application.MessageBox('Произошла ошибка при записи в файл!',
+              'Ошибка', MB_ICONERROR);
     End;
+    IsVacancyListSaved := IsCorrect;
+End;
+
+Procedure TVacancyListForm.MMProgramInfoClick(Sender: TObject);
+Begin
+    ShowProgramInfo();
+End;
+
+Procedure TVacancyListForm.MMInstructionClick(Sender: TObject);
+Begin
+    ShowInstruction();
 End;
 
 End.

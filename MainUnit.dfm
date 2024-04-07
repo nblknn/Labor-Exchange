@@ -7,6 +7,8 @@ object MainForm: TMainForm
   ClientHeight = 222
   ClientWidth = 244
   Color = clBtnFace
+  Constraints.MaxHeight = 283
+  Constraints.MaxWidth = 258
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -15
@@ -15,6 +17,7 @@ object MainForm: TMainForm
   Menu = MainMenu
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
+  OnResize = FormResize
   TextHeight = 20
   object LabelProgramName: TLabel
     Left = 72
@@ -29,14 +32,14 @@ object MainForm: TMainForm
     Font.Style = []
     ParentFont = False
   end
-  object ButtonFirmList: TButton
+  object ButtonVacancyList: TButton
     Left = 47
     Top = 48
     Width = 153
     Height = 41
-    Caption = #1057#1087#1080#1089#1086#1082' '#1092#1080#1088#1084
+    Caption = #1057#1087#1080#1089#1086#1082' '#1074#1072#1082#1072#1085#1089#1080#1081
     TabOrder = 0
-    OnClick = ButtonFirmListClick
+    OnClick = ButtonVacancyListClick
   end
   object ButtonCandidateList: TButton
     Left = 47
@@ -65,12 +68,14 @@ object MainForm: TMainForm
       object MMInstruction: TMenuItem
         Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
         ShortCut = 112
+        OnClick = MMInstructionClick
       end
       object MMSeparator: TMenuItem
         Caption = '-'
       end
       object MMProgramInfo: TMenuItem
         Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+        OnClick = MMProgramInfoClick
       end
     end
   end

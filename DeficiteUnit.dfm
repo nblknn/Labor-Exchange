@@ -16,6 +16,7 @@ object DeficiteForm: TDeficiteForm
   Menu = MainMenu
   Position = poScreenCenter
   OnClose = FormClose
+  OnHelp = FormHelp
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   TextHeight = 20
@@ -86,6 +87,8 @@ object DeficiteForm: TDeficiteForm
     ViewStyle = vsReport
   end
   object SaveDialog: TSaveDialog
+    DefaultExt = '*.can'
+    Filter = #1057#1087#1080#1089#1086#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074' (*.can)|*.can'
     Left = 424
     Top = 192
   end
@@ -99,19 +102,6 @@ object DeficiteForm: TDeficiteForm
         Enabled = False
         ShortCut = 16467
         OnClick = MMSaveFileClick
-      end
-    end
-    object N1: TMenuItem
-      Caption = #1057#1087#1088#1072#1074#1082#1072
-      object N4: TMenuItem
-        Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
-        ShortCut = 112
-      end
-      object N3: TMenuItem
-        Caption = '-'
-      end
-      object N2: TMenuItem
-        Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
       end
     end
   end

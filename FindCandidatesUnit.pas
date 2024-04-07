@@ -17,14 +17,12 @@ Type
         ListViewVacancy: TListView;
         LabelCandidates: TLabel;
         ListViewCandidates: TListView;
-        N1: TMenuItem;
-        N2: TMenuItem;
-        N3: TMenuItem;
-        N4: TMenuItem;
         SaveDialog: TSaveDialog;
         Procedure FormShow(Sender: TObject);
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
         Procedure MMSaveFileClick(Sender: TObject);
+    function FormHelp(Command: Word; Data: NativeInt;
+      var CallHelp: Boolean): Boolean;
     Private
         { Private declarations }
     Public
@@ -77,6 +75,13 @@ Begin
     ClearListView(ListViewCandidates);
     DeleteCandidateList(FoundCandidatesHead);
 End;
+
+function TFindCandidatesForm.FormHelp(Command: Word; Data: NativeInt;
+  var CallHelp: Boolean): Boolean;
+begin
+    ShowInstruction();
+    CallHelp := False;
+end;
 
 Procedure TFindCandidatesForm.FormShow(Sender: TObject);
 Begin

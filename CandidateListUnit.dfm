@@ -16,6 +16,7 @@ object CandidateListForm: TCandidateListForm
   Menu = MainMenu
   Position = poScreenCenter
   OnClose = FormClose
+  OnHelp = FormHelp
   OnKeyDown = FormKeyDown
   TextHeight = 20
   object ButtonAdd: TButton
@@ -56,6 +57,7 @@ object CandidateListForm: TCandidateListForm
     Caption = #1055#1086#1080#1089#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
     Enabled = False
     TabOrder = 3
+    OnClick = ButtonSearchClick
   end
   object ListView: TListView
     Left = 8
@@ -108,6 +110,7 @@ object CandidateListForm: TCandidateListForm
     Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
+    HideSelection = False
     ReadOnly = True
     RowSelect = True
     ParentFont = False
@@ -139,20 +142,26 @@ object CandidateListForm: TCandidateListForm
       object MMInstruction: TMenuItem
         Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
         ShortCut = 112
+        OnClick = MMInstructionClick
       end
       object MMSeparator: TMenuItem
         Caption = '-'
       end
       object MMProgramInfo: TMenuItem
         Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+        OnClick = MMProgramInfoClick
       end
     end
   end
   object OpenDialog: TOpenDialog
+    DefaultExt = '*.can'
+    Filter = #1057#1087#1080#1089#1086#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074' (*.can)|*.can'
     Left = 224
     Top = 184
   end
   object SaveDialog: TSaveDialog
+    DefaultExt = '*.can'
+    Filter = #1057#1087#1080#1089#1086#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074' (*.can)|*.can'
     Left = 424
     Top = 192
   end

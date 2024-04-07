@@ -36,6 +36,8 @@ Type
         Procedure FormShow(Sender: TObject);
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
         Procedure ClearControls();
+        Procedure ControlOnKeyDown(Sender: TObject; Var Key: Word;
+          Shift: TShiftState);
     Private
         { Private declarations }
     Public
@@ -84,6 +86,15 @@ Begin
       IsStrEditCorrect(LEditName) And IsStrEditCorrect(LEditPatronymic) And
       IsStrEditCorrect(LEditSpeciality) And IsStrEditCorrect(LEditTitle) And
       IsIntEditCorrect(LEditSalary, MINSALARY, MAXSALARY);
+End;
+
+Procedure TCandidateForm.ControlOnKeyDown(Sender: TObject; Var Key: Word;
+  Shift: TShiftState);
+Begin
+    If Key = VK_UP Then
+        SelectNext(TWinControl(Sender), False, True)
+    Else If Key = VK_DOWN Then
+        SelectNext(TWinControl(Sender), True, True)
 End;
 
 Procedure TCandidateForm.ClearControls();

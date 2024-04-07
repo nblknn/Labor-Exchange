@@ -51,6 +51,7 @@ object VacancyForm: TVacancyForm
     Height = 17
     Caption = #1058#1088#1077#1073#1091#1077#1090#1089#1103
     TabOrder = 5
+    OnKeyDown = ControlOnKeyDown
   end
   object LEditFirmName: TLabeledEdit
     Left = 160
@@ -68,6 +69,7 @@ object VacancyForm: TVacancyForm
     Text = ''
     TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditFirmNameKeyPress
   end
   object LEditSpeciality: TLabeledEdit
@@ -86,6 +88,7 @@ object VacancyForm: TVacancyForm
     Text = ''
     TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditSpecialityKeyPress
   end
   object LEditTitle: TLabeledEdit
@@ -104,6 +107,7 @@ object VacancyForm: TVacancyForm
     Text = ''
     TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditTitleKeyPress
   end
   object LEditSalary: TLabeledEdit
@@ -123,6 +127,7 @@ object VacancyForm: TVacancyForm
     Text = ''
     TextHint = '1..99999'
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditSalaryKeyPress
   end
   object LEditVacationDays: TLabeledEdit
@@ -142,6 +147,7 @@ object VacancyForm: TVacancyForm
     Text = ''
     TextHint = '1..99'
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditVacationDaysKeyPress
   end
   object LEditMinAge: TLabeledEdit
@@ -161,6 +167,7 @@ object VacancyForm: TVacancyForm
     Text = ''
     TextHint = '14..99'
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditMinAgeKeyPress
   end
   object LEditMaxAge: TLabeledEdit
@@ -180,6 +187,7 @@ object VacancyForm: TVacancyForm
     Text = ''
     TextHint = '14..99'
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditMaxAgeKeyPress
   end
 end

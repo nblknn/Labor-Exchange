@@ -1,10 +1,14 @@
 object VacancyListForm: TVacancyListForm
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = #1057#1087#1080#1089#1086#1082' '#1074#1072#1082#1072#1085#1089#1080#1081
-  ClientHeight = 381
-  ClientWidth = 762
+  ClientHeight = 382
+  ClientWidth = 756
   Color = clBtnFace
+  Constraints.MaxHeight = 443
+  Constraints.MaxWidth = 770
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -15
@@ -14,6 +18,7 @@ object VacancyListForm: TVacancyListForm
   Menu = MainMenu
   Position = poScreenCenter
   OnClose = FormClose
+  OnHelp = FormHelp
   OnKeyDown = FormKeyDown
   TextHeight = 20
   object ListView: TListView
@@ -62,6 +67,7 @@ object VacancyListForm: TVacancyListForm
     Font.Height = -12
     Font.Name = 'Segoe UI'
     Font.Style = []
+    HideSelection = False
     ReadOnly = True
     RowSelect = True
     ParentFont = False
@@ -127,25 +133,31 @@ object VacancyListForm: TVacancyListForm
         OnClick = MMSaveFileClick
       end
     end
-    object N1: TMenuItem
+    object MMHelp: TMenuItem
       Caption = #1057#1087#1088#1072#1074#1082#1072
-      object N4: TMenuItem
+      object MMInstruction: TMenuItem
         Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
         ShortCut = 112
+        OnClick = MMInstructionClick
       end
-      object N3: TMenuItem
+      object MMSeparator: TMenuItem
         Caption = '-'
       end
-      object N2: TMenuItem
+      object MMProgramInfo: TMenuItem
         Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+        OnClick = MMProgramInfoClick
       end
     end
   end
   object SaveDialog: TSaveDialog
+    DefaultExt = '*.vac'
+    Filter = #1057#1087#1080#1089#1086#1082' '#1074#1072#1082#1072#1085#1089#1080#1081' (*.vac)|*.vac'
     Left = 304
     Top = 120
   end
   object OpenDialog: TOpenDialog
+    DefaultExt = '*.vac'
+    Filter = #1057#1087#1080#1089#1086#1082' '#1074#1072#1082#1072#1085#1089#1080#1081' (*.vac)|*.vac'
     Left = 544
     Top = 120
   end

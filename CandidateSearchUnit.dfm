@@ -1,18 +1,17 @@
-object VacancySearchForm: TVacancySearchForm
+object CandidateSearchForm: TCandidateSearchForm
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
-  Caption = #1055#1086#1080#1089#1082' '#1074#1072#1082#1072#1085#1089#1080#1080
-  ClientHeight = 164
-  ClientWidth = 199
+  Caption = #1055#1086#1080#1089#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
+  ClientHeight = 162
+  ClientWidth = 201
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  KeyPreview = True
   Position = poScreenCenter
   OnClose = FormClose
   OnKeyDown = FormKeyDown
@@ -44,7 +43,6 @@ object VacancySearchForm: TVacancySearchForm
     TabOrder = 0
     TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     OnChange = EditValueChange
-    OnKeyPress = EditValueKeyPress
   end
   object ButtonSearch: TButton
     Left = 8
@@ -84,7 +82,7 @@ object VacancySearchForm: TVacancySearchForm
     TabOrder = 4
     OnSelect = ComboBoxParamSelect
     Items.Strings = (
-      #1053#1072#1079#1074#1072#1085#1080#1102' '#1092#1080#1088#1084#1099
+      #1060#1072#1084#1080#1083#1080#1080
       #1057#1087#1077#1094#1080#1072#1083#1100#1085#1086#1089#1090#1080
       #1044#1086#1083#1078#1085#1086#1089#1090#1080)
   end

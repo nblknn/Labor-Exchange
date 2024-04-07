@@ -15,15 +15,13 @@ Type
         MMFile: TMenuItem;
         MMSaveFile: TMenuItem;
         LabelInfo: TLabel;
-        N1: TMenuItem;
-        N2: TMenuItem;
-        N3: TMenuItem;
-        N4: TMenuItem;
         Procedure FormShow(Sender: TObject);
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
         Procedure FormKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
         Procedure MMSaveFileClick(Sender: TObject);
+    function FormHelp(Command: Word; Data: NativeInt;
+      var CallHelp: Boolean): Boolean;
     Private
         { Private declarations }
     Public
@@ -136,6 +134,13 @@ Begin
     TitleArr := Nil;
     DeleteCandidateList(Head);
 End;
+
+function TDeficiteForm.FormHelp(Command: Word; Data: NativeInt;
+  var CallHelp: Boolean): Boolean;
+begin
+    ShowInstruction();
+    CallHelp := False;
+end;
 
 Procedure TDeficiteForm.FormKeyDown(Sender: TObject; Var Key: Word;
   Shift: TShiftState);

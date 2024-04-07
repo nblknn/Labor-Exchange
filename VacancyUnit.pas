@@ -21,7 +21,7 @@ Type
         LEditMinAge: TLabeledEdit;
         LEditMaxAge: TLabeledEdit;
         Procedure ButtonCancelClick(Sender: TObject);
-        Procedure FormKeyDown(Sender: TObject; Var Key: Word;
+        Procedure ControlOnKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
         Procedure EditOnChange(Sender: TObject);
         Procedure ClearControls();
@@ -35,6 +35,8 @@ Type
         Procedure LEditVacationDaysKeyPress(Sender: TObject; Var Key: Char);
         Procedure LEditMinAgeKeyPress(Sender: TObject; Var Key: Char);
         Procedure LEditMaxAgeKeyPress(Sender: TObject; Var Key: Char);
+        Procedure FormKeyDown(Sender: TObject; Var Key: Word;
+          Shift: TShiftState);
     Private
         { Private declarations }
     Public
@@ -92,6 +94,15 @@ Begin
         AddVacancyToListView(NewInfo, VacancyListForm.ListView);
     End;
     Close;
+End;
+
+Procedure TVacancyForm.ControlOnKeyDown(Sender: TObject; Var Key: Word;
+  Shift: TShiftState);
+Begin
+    If Key = VK_UP Then
+        SelectNext(TWinControl(Sender), False, True)
+    Else If Key = VK_DOWN Then
+        SelectNext(TWinControl(Sender), True, True)
 End;
 
 Procedure TVacancyForm.ClearControls();

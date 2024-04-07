@@ -4,7 +4,7 @@ object FindCandidatesForm: TFindCandidatesForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1055#1086#1076#1073#1086#1088' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074
-  ClientHeight = 388
+  ClientHeight = 396
   ClientWidth = 758
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,6 +15,7 @@ object FindCandidatesForm: TFindCandidatesForm
   Menu = MainMenu
   Position = poScreenCenter
   OnClose = FormClose
+  OnHelp = FormHelp
   OnShow = FormShow
   TextHeight = 20
   object LabelVacancy: TLabel
@@ -152,21 +153,10 @@ object FindCandidatesForm: TFindCandidatesForm
         OnClick = MMSaveFileClick
       end
     end
-    object N1: TMenuItem
-      Caption = #1057#1087#1088#1072#1074#1082#1072
-      object N4: TMenuItem
-        Caption = #1048#1085#1089#1090#1088#1091#1082#1094#1080#1103
-        ShortCut = 112
-      end
-      object N3: TMenuItem
-        Caption = '-'
-      end
-      object N2: TMenuItem
-        Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
-      end
-    end
   end
   object SaveDialog: TSaveDialog
+    DefaultExt = '*.can'
+    Filter = #1057#1087#1080#1089#1086#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074' (*.can)|*.can'
     Left = 632
     Top = 224
   end

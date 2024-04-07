@@ -59,6 +59,7 @@ object CandidateForm: TCandidateForm
     Height = 17
     Caption = #1048#1084#1077#1077#1090#1089#1103
     TabOrder = 5
+    OnKeyDown = ControlOnKeyDown
   end
   object DateTimePicker: TDateTimePicker
     Left = 135
@@ -70,6 +71,7 @@ object CandidateForm: TCandidateForm
     MaxDate = 40281.999988425920000000
     MinDate = 8870.000000000000000000
     TabOrder = 3
+    OnKeyDown = ControlOnKeyDown
   end
   object LEditSurname: TLabeledEdit
     Left = 135
@@ -87,6 +89,7 @@ object CandidateForm: TCandidateForm
     Text = ''
     TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditSurnameKeyPress
   end
   object LEditName: TLabeledEdit
@@ -105,6 +108,7 @@ object CandidateForm: TCandidateForm
     Text = ''
     TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditNameKeyPress
   end
   object LEditPatronymic: TLabeledEdit
@@ -123,6 +127,7 @@ object CandidateForm: TCandidateForm
     Text = ''
     TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditPatronymicKeyPress
   end
   object LEditSpeciality: TLabeledEdit
@@ -141,6 +146,7 @@ object CandidateForm: TCandidateForm
     Text = ''
     TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditSpecialityKeyPress
   end
   object LEditTitle: TLabeledEdit
@@ -159,6 +165,7 @@ object CandidateForm: TCandidateForm
     Text = ''
     TextHint = #1044#1086' 20 '#1089#1080#1084#1074#1086#1083#1086#1074
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditTitleKeyPress
   end
   object LEditSalary: TLabeledEdit
@@ -178,6 +185,7 @@ object CandidateForm: TCandidateForm
     Text = ''
     TextHint = '1..99999'
     OnChange = EditOnChange
+    OnKeyDown = ControlOnKeyDown
     OnKeyPress = LEditSalaryKeyPress
   end
 end

@@ -1,22 +1,21 @@
-Unit VacancySearchUnit;
+Unit CandidateSearchUnit;
 
 Interface
 
 Uses
     Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
     System.Classes, Vcl.Graphics,
-    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VacancyListUnit, Vcl.StdCtrls,
-    Vcl.ExtCtrls, Vcl.DBCtrls;
+    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
 
 Type
-    TVacancySearchForm = Class(TForm)
+    TCandidateSearchForm = Class(TForm)
+        LabelSearch: TLabel;
+        LabelInfo: TLabel;
         EditValue: TEdit;
         ButtonSearch: TButton;
         ButtonCancel: TButton;
         ButtonNext: TButton;
         ComboBoxParam: TComboBox;
-        LabelSearch: TLabel;
-        LabelInfo: TLabel;
         Procedure ComboBoxParamSelect(Sender: TObject);
         Procedure ButtonCancelClick(Sender: TObject);
         Procedure EditValueChange(Sender: TObject);
@@ -33,38 +32,40 @@ Type
     End;
 
 Var
-    VacancySearchForm: TVacancySearchForm;
+    CandidateSearchForm: TCandidateSearchForm;
 
 Implementation
 
 {$R *.dfm}
 
-Uses MainUnit;
+Uses MainUnit, CandidateListUnit;
 
 Type
-    TSearchParameter = (SpFirmName, SpSpeciality, SpTitle);
-    TSearchFunc = Function(Param: ShortString; Vacancy: PVacancy): Boolean;
+    TSearchParameter = (SpSurname, SpSpeciality, SpTitle);
+    TSearchFunc = Function(Param: ShortString; Candidate: PCandidate): Boolean;
 
-Function AreFirmNamesEqual(Name: ShortString; Vacancy: PVacancy): Boolean;
+Function AreSurnamesEqual(Surname: ShortString; Candidate: PCandidate): Boolean;
 Begin
-    AreFirmNamesEqual := AnsiUpperCase(Vacancy.Info.FirmName)
-      = AnsiUpperCase(Name);
+    AreSurnamesEqual := AnsiUpperCase(Candidate.Info.Surname)
+      = AnsiUpperCase(Surname);
 End;
 
-Function AreSpecialitiesEqual(Spec: ShortString; Vacancy: PVacancy): Boolean;
+Function AreSpecialitiesEqual(Spec: ShortString; Candidate: PCandidate)
+  : Boolean;
 Begin
-    AreSpecialitiesEqual := AnsiUpperCase(Vacancy.Info.Speciality)
+    AreSpecialitiesEqual := AnsiUpperCase(Candidate.Info.Speciality)
       = AnsiUpperCase(Spec);
 End;
 
-Function AreTitlesEqual(Title: ShortString; Vacancy: PVacancy): Boolean;
+Function AreTitlesEqual(Title: ShortString; Candidate: PCandidate): Boolean;
 Begin
-    AreTitlesEqual := AnsiUpperCase(Vacancy.Info.Title) = AnsiUpperCase(Title);
+    AreTitlesEqual := AnsiUpperCase(Candidate.Info.Title)
+      = AnsiUpperCase(Title);
 End;
 
 Const
-    AreParamsEqual: Array [TSearchParameter] Of TSearchFunc =
-      (AreFirmNamesEqual, AreSpecialitiesEqual, AreTitlesEqual);
+    AreParamsEqual: Array [TSearchParameter] Of TSearchFunc = (AreSurnamesEqual,
+      AreSpecialitiesEqual, AreTitlesEqual);
 
 Var
     SearchParam: TSearchParameter;
@@ -79,11 +80,11 @@ End;
 
 Procedure Search(Param: ShortString);
 Var
-    Temp: PVacancy;
+    Temp: PCandidate;
     I: Integer;
 Begin
     I := 0;
-    Temp := VacancyHead;
+    Temp := CandidateHead;
     While Temp <> Nil Do
     Begin
         If AreParamsEqual[SearchParam](Param, Temp) Then
@@ -93,37 +94,37 @@ Begin
     End;
 End;
 
-Procedure TVacancySearchForm.ButtonSearchClick(Sender: TObject);
+Procedure TCandidateSearchForm.ButtonSearchClick(Sender: TObject);
 Begin
     FoundIndexes := Nil;
     Search(EditValue.Text);
     Count := Length(FoundIndexes);
     If Count = 0 Then
-        LabelInfo.Caption := 'Вакансии не были найдены.'
+        LabelInfo.Caption := 'Кандидаты не были найдены.'
     Else
     Begin
-        LabelInfo.Caption := 'Было найдено ' + IntToStr(Count) + ' вакансий.';
+        LabelInfo.Caption := 'Было найдено ' + IntToStr(Count) + ' кандидатов.';
         ButtonNext.Enabled := True;
     End;
     LabelInfo.Visible := True;
 End;
 
-Procedure TVacancySearchForm.ButtonCancelClick(Sender: TObject);
+Procedure TCandidateSearchForm.ButtonCancelClick(Sender: TObject);
 Begin
     Close;
 End;
 
-Procedure TVacancySearchForm.ButtonNextClick(Sender: TObject);
+Procedure TCandidateSearchForm.ButtonNextClick(Sender: TObject);
 Begin
     SelectItemInListView(FoundIndexes[Length(FoundIndexes) - Count],
-      VacancyListForm.ListView);
+      CandidateListForm.ListView);
     If Count > 1 Then
         Dec(Count)
     Else
         Count := Length(FoundIndexes);
 End;
 
-Procedure TVacancySearchForm.ComboBoxParamSelect(Sender: TObject);
+Procedure TCandidateSearchForm.ComboBoxParamSelect(Sender: TObject);
 Begin
     LabelInfo.Visible := False;
     ButtonNext.Enabled := False;
@@ -131,19 +132,20 @@ Begin
     EditValue.Enabled := True;
 End;
 
-Procedure TVacancySearchForm.EditValueChange(Sender: TObject);
+Procedure TCandidateSearchForm.EditValueChange(Sender: TObject);
 Begin
     ButtonSearch.Enabled := Not(Length(EditValue.Text) > MAXLEN) And
       (EditValue.Text <> '');
 End;
 
-Procedure TVacancySearchForm.EditValueKeyPress(Sender: TObject; Var Key: Char);
+Procedure TCandidateSearchForm.EditValueKeyPress(Sender: TObject;
+  Var Key: Char);
 Begin
     If Not(Length(EditValue.Text) < MAXLEN) And (Key <> BACKSPACE) Then
         Key := NULL;
 End;
 
-Procedure TVacancySearchForm.FormClose(Sender: TObject;
+Procedure TCandidateSearchForm.FormClose(Sender: TObject;
   Var Action: TCloseAction);
 Begin
     EditValue.Text := '';
@@ -154,7 +156,7 @@ Begin
     FoundIndexes := Nil;
 End;
 
-Procedure TVacancySearchForm.FormKeyDown(Sender: TObject; Var Key: Word;
+Procedure TCandidateSearchForm.FormKeyDown(Sender: TObject; Var Key: Word;
   Shift: TShiftState);
 Begin
     If Key = VK_ESCAPE Then
