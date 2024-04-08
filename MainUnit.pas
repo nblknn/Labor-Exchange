@@ -48,8 +48,10 @@ Const
 Function IsFileExtCorrect(Path: String; Const EXT: String): Boolean;
 Procedure SelectItemInListView(I: Integer; ListView: TListView);
 Procedure ClearListView(ListView: TListView);
-Procedure EditKeyPress(LEdit: TLabeledEdit; Var Key: Char;
+Procedure StrEditKeyPress(LEdit: TLabeledEdit; Var Key: Char;
   Const MAXLENGTH: Integer);
+Procedure IntEditKeyPress(LEdit: TLabeledEdit; Var Key: Char;
+  Const MAX: Integer);
 Function IsStrEditCorrect(LEdit: TLabeledEdit): Boolean;
 Function IsIntEditCorrect(LEdit: TLabeledEdit;
   Const MINVALUE, MAXVALUE: Integer): Boolean;
@@ -80,10 +82,23 @@ Begin
       (Value > MINVALUE - 1) And (Value < MAXVALUE + 1);
 End;
 
-Procedure EditKeyPress(LEdit: TLabeledEdit; Var Key: Char;
+Procedure StrEditKeyPress(LEdit: TLabeledEdit; Var Key: Char;
   Const MAXLENGTH: Integer);
 Begin
     If (Key <> BACKSPACE) And Not(Length(LEdit.Text) < MAXLENGTH) Then
+        Key := NULL;
+End;
+
+Procedure IntEditKeyPress(LEdit: TLabeledEdit; Var Key: Char;
+  Const MAX: Integer);
+Begin
+    If (Key <> BACKSPACE) And
+      Not(Length(LEdit.Text) < Length(IntToStr(MAX))) Then
+        Key := NULL
+    Else If (LEdit.SelStart = 0) And (Key = '0') Then
+        Key := NULL
+    Else If (Length(LEdit.Text) > 0) And (StrToInt(LEdit.Text) = 0) And
+      (LEdit.SelStart <> 0) And (Key <> BACKSPACE) Then
         Key := NULL;
 End;
 
@@ -164,10 +179,9 @@ Begin
       ('1. Для добавления записи в список нажмите на кнопку "Добавить", и введите требующуюся информацию.'#13#10
       + '2. Для редактирования записи нажмите дважды на нужную строку списка.'#13#10
       + '3. Для удаления записи выберите ее в списке и нажмите на кнопку "Удалить".'#13#10
-      + '4. Для поиска по записям нажмите на кнопку "Поиск", выберите критерий и введите данные. Для отображения найденных записей нажмите на кнопку "Дальше".'#13#10
-      + '5. Для подбора кандидатов для вакансии выберите нужную вакансию в списке и нажмите на кнопку "Подобрать кандидатов".'#13#10
-      + '6. Формат для файлов с вакансиями: *.vac.'#13#10 +
-      '7. Формат для файлов с кандидатами: *.can.', 'Инструкция', MB_OK);
+      + '4. Для подбора кандидатов для вакансии выберите нужную вакансию в списке и нажмите на кнопку "Подобрать кандидатов".'#13#10
+      + '5. Формат для файлов с вакансиями: *.vac.'#13#10 +
+      '6. Формат для файлов с кандидатами: *.can.', 'Инструкция', MB_OK);
 End;
 
 Procedure ShowProgramInfo();

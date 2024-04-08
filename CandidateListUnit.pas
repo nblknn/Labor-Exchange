@@ -26,7 +26,6 @@ Type
         ButtonAdd: TButton;
         ButtonDelete: TButton;
         ButtonDeficite: TButton;
-        ButtonSearch: TButton;
         ListView: TListView;
         MainMenu: TMainMenu;
         MMFile: TMenuItem;
@@ -55,7 +54,7 @@ Type
         Procedure MMProgramInfoClick(Sender: TObject);
         Function FormHelp(Command: Word; Data: NativeInt;
           Var CallHelp: Boolean): Boolean;
-        Procedure ButtonSearchClick(Sender: TObject);
+        Procedure ListViewDeletion(Sender: TObject; Item: TListItem);
     Private
         { Private declarations }
     Public
@@ -68,6 +67,7 @@ Procedure AddCandidate(CandidateInfo: TCandidateInfo; Var Head: PCandidate);
 Procedure EditCandidate(OldInfo, NewInfo: TCandidateInfo);
 Procedure DeleteCandidateList(Var Head: PCandidate);
 Function SaveCandidateListToFile(Head: PCandidate; Path: String): Boolean;
+Function IsCandidateInList(Info: TCandidateInfo): Boolean;
 
 Var
     CandidateListForm: TCandidateListForm;
@@ -78,7 +78,7 @@ Implementation
 
 {$R *.dfm}
 
-Uses CandidateUnit, DeficiteUnit, CandidateSearchUnit;
+Uses CandidateUnit, DeficitUnit;
 
 Const
     HIGHEDUCATION: Array [Boolean] Of String = ('Нет', 'Есть');
@@ -160,6 +160,16 @@ Begin
     EditCandidateInListView(NewInfo); // вызывать из candidateюнит?
 End;
 
+Function IsCandidateInList(Info: TCandidateInfo): Boolean;
+Var
+    Temp: PCandidate;
+Begin
+    Temp := CandidateHead;
+    While (Temp <> Nil) And Not AreCandidatesEqual(Info, Temp^.Info) Do
+        Temp := Temp.Next;
+    IsCandidateInList := Temp <> Nil;
+End;
+
 Procedure DeleteCandidate(CandidateInfo: TCandidateInfo);
 Var
     Temp1, Temp2: PCandidate;
@@ -216,7 +226,7 @@ End;
 
 Procedure TCandidateListForm.ButtonDeficiteClick(Sender: TObject);
 Begin
-    DeficiteForm.ShowModal;
+    DeficitForm.ShowModal;
 End;
 
 Procedure TCandidateListForm.ButtonDeleteClick(Sender: TObject);
@@ -230,15 +240,9 @@ Begin
     Begin
         DeleteCandidate(GetCandidateInfo(ListView.Selected));
         ListView.Selected.Delete;
-        IsCandidateListSaved := False;
     End
     Else
         ListView.ClearSelection;
-End;
-
-Procedure TCandidateListForm.ButtonSearchClick(Sender: TObject);
-Begin
-    CandidateSearchForm.Show;
 End;
 
 Procedure TCandidateListForm.FormClose(Sender: TObject;
@@ -266,7 +270,6 @@ End;
 Procedure TCandidateListForm.ListViewChange(Sender: TObject; Item: TListItem;
   Change: TItemChange);
 Begin
-    ButtonSearch.Enabled := ListView.Items.Count > 0;
     ButtonDeficite.Enabled := ListView.Items.Count > 0;
     MMSaveFile.Enabled := ListView.Items.Count > 0;
 End;
@@ -279,6 +282,13 @@ Begin
         IsEditing := True;
         CandidateForm.ShowModal;
     End;
+End;
+
+Procedure TCandidateListForm.ListViewDeletion(Sender: TObject; Item: TListItem);
+Begin
+    ButtonDeficite.Enabled := ListView.Items.Count > 1;
+    MMSaveFile.Enabled := ListView.Items.Count > 1;
+    IsCandidateListSaved := ListView.Items.Count = 1;
 End;
 
 Procedure TCandidateListForm.ListViewSelectItem(Sender: TObject;

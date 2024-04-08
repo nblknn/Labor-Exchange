@@ -71,49 +71,40 @@ object VacancyListForm: TVacancyListForm
     ReadOnly = True
     RowSelect = True
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 3
     ViewStyle = vsReport
     OnChange = ListViewChange
     OnDblClick = ListViewDblClick
+    OnDeletion = ListViewDeletion
     OnSelectItem = ListViewSelectItem
   end
   object ButtonAdd: TButton
     Left = 8
     Top = 8
-    Width = 169
-    Height = 41
+    Width = 185
+    Height = 42
     Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074#1072#1082#1072#1085#1089#1080#1102
     TabOrder = 0
     OnClick = ButtonAddClick
   end
   object ButtonDelete: TButton
-    Left = 200
+    Left = 280
     Top = 8
-    Width = 169
-    Height = 41
+    Width = 185
+    Height = 42
     Caption = #1059#1076#1072#1083#1080#1090#1100' '#1074#1072#1082#1072#1085#1089#1080#1102
     Enabled = False
     TabOrder = 1
     OnClick = ButtonDeleteClick
   end
-  object ButtonSearch: TButton
-    Left = 392
-    Top = 8
-    Width = 169
-    Height = 41
-    Caption = #1055#1086#1080#1089#1082' '#1074#1072#1082#1072#1085#1089#1080#1080
-    Enabled = False
-    TabOrder = 2
-    OnClick = ButtonSearchClick
-  end
   object ButtonFindCandidates: TButton
-    Left = 582
+    Left = 563
     Top = 8
-    Width = 169
-    Height = 41
+    Width = 185
+    Height = 42
     Caption = #1055#1086#1076#1086#1073#1088#1072#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074
     Enabled = False
-    TabOrder = 3
+    TabOrder = 2
     OnClick = ButtonFindCandidatesClick
   end
   object MainMenu: TMainMenu

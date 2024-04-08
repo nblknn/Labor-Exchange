@@ -19,46 +19,6 @@ object CandidateListForm: TCandidateListForm
   OnHelp = FormHelp
   OnKeyDown = FormKeyDown
   TextHeight = 20
-  object ButtonAdd: TButton
-    Left = 8
-    Top = 8
-    Width = 169
-    Height = 42
-    Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
-    TabOrder = 0
-    OnClick = ButtonAddClick
-  end
-  object ButtonDelete: TButton
-    Left = 200
-    Top = 8
-    Width = 169
-    Height = 42
-    Caption = #1059#1076#1072#1083#1080#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
-    Enabled = False
-    TabOrder = 1
-    OnClick = ButtonDeleteClick
-  end
-  object ButtonDeficite: TButton
-    Left = 583
-    Top = 8
-    Width = 169
-    Height = 42
-    Caption = #1057#1087#1080#1089#1086#1082' '#1076#1077#1092#1080#1094#1080#1090#1085#1099#1093' '#1089#1087#1077#1094#1080#1072#1083#1080#1089#1090#1086#1074
-    Enabled = False
-    TabOrder = 2
-    WordWrap = True
-    OnClick = ButtonDeficiteClick
-  end
-  object ButtonSearch: TButton
-    Left = 392
-    Top = 8
-    Width = 169
-    Height = 42
-    Caption = #1055#1086#1080#1089#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
-    Enabled = False
-    TabOrder = 3
-    OnClick = ButtonSearchClick
-  end
   object ListView: TListView
     Left = 8
     Top = 56
@@ -114,11 +74,42 @@ object CandidateListForm: TCandidateListForm
     ReadOnly = True
     RowSelect = True
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 3
     ViewStyle = vsReport
     OnChange = ListViewChange
     OnDblClick = ListViewDblClick
+    OnDeletion = ListViewDeletion
     OnSelectItem = ListViewSelectItem
+  end
+  object ButtonAdd: TButton
+    Left = 8
+    Top = 8
+    Width = 185
+    Height = 42
+    Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
+    TabOrder = 0
+    OnClick = ButtonAddClick
+  end
+  object ButtonDelete: TButton
+    Left = 280
+    Top = 8
+    Width = 185
+    Height = 42
+    Caption = #1059#1076#1072#1083#1080#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
+    Enabled = False
+    TabOrder = 1
+    OnClick = ButtonDeleteClick
+  end
+  object ButtonDeficite: TButton
+    Left = 567
+    Top = 8
+    Width = 185
+    Height = 42
+    Caption = #1057#1087#1080#1089#1086#1082' '#1076#1077#1092#1080#1094#1080#1090#1085#1099#1093' '#1089#1087#1077#1094#1080#1072#1083#1080#1089#1090#1086#1074
+    Enabled = False
+    TabOrder = 2
+    WordWrap = True
+    OnClick = ButtonDeficiteClick
   end
   object MainMenu: TMainMenu
     Left = 312

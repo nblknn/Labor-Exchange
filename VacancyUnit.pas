@@ -90,8 +90,14 @@ Begin
         EditVacancy(OldInfo, NewInfo)
     Else
     Begin
-        AddVacancy(NewInfo, VacancyHead);
-        AddVacancyToListView(NewInfo, VacancyListForm.ListView);
+        If Not IsVacancyInList(NewInfo) Then
+        Begin
+            AddVacancy(NewInfo, VacancyHead);
+            AddVacancyToListView(NewInfo, VacancyListForm.ListView);
+        End
+        Else
+            Application.MessageBox('Такая вакансия уже есть в списке!',
+              'Ошибка', MB_ICONERROR);
     End;
     Close;
 End;
@@ -156,38 +162,38 @@ End;
 
 Procedure TVacancyForm.LEditFirmNameKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditFirmName, Key, MAXLEN);
+    StrEditKeyPress(LEditFirmName, Key, MAXLEN);
 End;
 
 Procedure TVacancyForm.LEditMaxAgeKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditMaxAge, Key, Length(IntToStr(MAXWORKAGE)));
+    IntEditKeyPress(LEditMaxAge, Key, MAXWORKAGE);
 End;
 
 Procedure TVacancyForm.LEditMinAgeKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditMinAge, Key, Length(IntToStr(MAXWORKAGE)));
+    IntEditKeyPress(LEditMinAge, Key, MAXWORKAGE);
 End;
 
 Procedure TVacancyForm.LEditSalaryKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditSalary, Key, Length(IntToStr(MAXSALARY)));
+    IntEditKeyPress(LEditSalary, Key, MAXSALARY);
 End;
 
 Procedure TVacancyForm.LEditSpecialityKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditSpeciality, Key, MAXLEN);
+    StrEditKeyPress(LEditSpeciality, Key, MAXLEN);
 End;
 
 Procedure TVacancyForm.LEditTitleKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditTitle, Key, MAXLEN);
+    StrEditKeyPress(LEditTitle, Key, MAXLEN);
 End;
 
 Procedure TVacancyForm.LEditVacationDaysKeyPress(Sender: TObject;
   Var Key: Char);
 Begin
-    EditKeyPress(LEditVacationDays, Key, Length(IntToStr(MAXVACATION)));
+    IntEditKeyPress(LEditVacationDays, Key, MAXVACATION);
 End;
 
 End.

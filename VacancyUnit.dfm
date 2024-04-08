@@ -4,8 +4,8 @@ object VacancyForm: TVacancyForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1042#1072#1082#1072#1085#1089#1080#1103
-  ClientHeight = 271
-  ClientWidth = 294
+  ClientHeight = 275
+  ClientWidth = 290
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

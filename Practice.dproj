@@ -97,6 +97,9 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Icon_MainIcon>C:\Users\Ksenia\Downloads\4105929-bag-briefcase-case-work_113916.ico</Icon_MainIcon>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -118,10 +121,6 @@
             <Form>CandidateListForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="VacancySearchUnit.pas">
-            <Form>SearchForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="CandidateUnit.pas">
             <Form>CandidateForm</Form>
             <FormType>dfm</FormType>
@@ -130,12 +129,8 @@
             <Form>FindCandidatesForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="DeficiteUnit.pas">
-            <Form>DeficiteForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="CandidateSearchUnit.pas">
-            <Form>CandidateSearchForm</Form>
+        <DCCReference Include="DeficitUnit.pas">
+            <Form>DeficitForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">

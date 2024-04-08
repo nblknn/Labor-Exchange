@@ -57,9 +57,9 @@ Uses MainUnit;
 
 Procedure TCandidateForm.ButtonSaveClick(Sender: TObject);
 Var
-    CandidateInfo: TCandidateInfo;
+    NewInfo: TCandidateInfo;
 Begin
-    With CandidateInfo Do
+    With NewInfo Do
     Begin
         Surname := LEditSurname.Text;
         Name := LEditName.Text;
@@ -71,11 +71,17 @@ Begin
         Salary := StrToInt(LEditSalary.Text);
     End;
     If IsEditing Then
-        EditCandidate(OldInfo, CandidateInfo)
+        EditCandidate(OldInfo, NewInfo)
     Else
     Begin
-        AddCandidate(CandidateInfo, CandidateHead);
-        AddCandidateToListView(CandidateInfo, CandidateListForm.ListView);
+        If Not IsCandidateInList(NewInfo) Then
+        Begin
+            AddCandidate(NewInfo, CandidateHead);
+            AddCandidateToListView(NewInfo, CandidateListForm.ListView);
+        End
+        Else
+            Application.MessageBox('Такой кандидат уже есть в списке!',
+              'Ошибка', MB_ICONERROR);
     End;
     Close;
 End;
@@ -152,34 +158,34 @@ End;
 
 Procedure TCandidateForm.LEditNameKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditName, Key, MAXLEN);
+    StrEditKeyPress(LEditName, Key, MAXLEN);
 End;
 
 Procedure TCandidateForm.LEditPatronymicKeyPress(Sender: TObject;
   Var Key: Char);
 Begin
-    EditKeyPress(LEditPatronymic, Key, MAXLEN);
+    StrEditKeyPress(LEditPatronymic, Key, MAXLEN);
 End;
 
 Procedure TCandidateForm.LEditSalaryKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditSalary, Key, Length(IntToStr(MAXSALARY)));
+    IntEditKeyPress(LEditSalary, Key, MAXSALARY);
 End;
 
 Procedure TCandidateForm.LEditSpecialityKeyPress(Sender: TObject;
   Var Key: Char);
 Begin
-    EditKeyPress(LEditSpeciality, Key, MAXLEN);
+    StrEditKeyPress(LEditSpeciality, Key, MAXLEN);
 End;
 
 Procedure TCandidateForm.LEditSurnameKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditSurname, Key, MAXLEN);
+    StrEditKeyPress(LEditSurname, Key, MAXLEN);
 End;
 
 Procedure TCandidateForm.LEditTitleKeyPress(Sender: TObject; Var Key: Char);
 Begin
-    EditKeyPress(LEditTitle, Key, MAXLEN);
+    StrEditKeyPress(LEditTitle, Key, MAXLEN);
 End;
 
 Procedure TCandidateForm.ButtonCancelClick(Sender: TObject);

@@ -31,7 +31,6 @@ Type
         ListView: TListView;
         ButtonAdd: TButton;
         ButtonDelete: TButton;
-        ButtonSearch: TButton;
         ButtonFindCandidates: TButton;
         SaveDialog: TSaveDialog;
         OpenDialog: TOpenDialog;
@@ -50,13 +49,13 @@ Type
           Shift: TShiftState);
         Procedure MMSaveFileClick(Sender: TObject);
         Procedure MMOpenFileClick(Sender: TObject);
-        Procedure ButtonSearchClick(Sender: TObject);
         Procedure ButtonFindCandidatesClick(Sender: TObject);
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
         Procedure MMInstructionClick(Sender: TObject);
         Procedure MMProgramInfoClick(Sender: TObject);
         Function FormHelp(Command: Word; Data: NativeInt;
           Var CallHelp: Boolean): Boolean;
+        Procedure ListViewDeletion(Sender: TObject; Item: TListItem);
     Private
         { Private declarations }
     Public
@@ -66,6 +65,7 @@ Type
 Procedure AddVacancyToListView(VacancyInfo: TVacancyInfo; ListView: TListView);
 Procedure AddVacancy(VacancyInfo: TVacancyInfo; Var Head: PVacancy);
 Procedure EditVacancy(OldInfo, NewInfo: TVacancyInfo);
+Function IsVacancyInList(Info: TVacancyInfo): Boolean;
 
 Var
     VacancyListForm: TVacancyListForm;
@@ -76,7 +76,7 @@ Implementation
 
 {$R *.dfm}
 
-Uses VacancyUnit, VacancySearchUnit, FindCandidatesUnit;
+Uses VacancyUnit, FindCandidatesUnit;
 
 Const
     HIGHEDUREQUIRED: Array [Boolean] Of String = ('Не требуется', 'Требуется');
@@ -86,11 +86,11 @@ Var
     NewItem: TListItem;
 Begin
     NewItem := ListView.Items.Add;
-    NewItem.Caption := VacancyInfo.FirmName;
+    NewItem.Caption := String(VacancyInfo.FirmName);
     With NewItem.SubItems, VacancyInfo Do
     Begin
-        Add(Speciality);
-        Add(Title);
+        Add(String(Speciality));
+        Add(String(Title));
         Add(IntToStr(Salary));
         Add(IntToStr(VacationDays));
         Add(HIGHEDUREQUIRED[IsHighEducationRequired]);
@@ -132,15 +132,25 @@ Procedure EditVacancyInListView(NewInfo: TVacancyInfo);
 Begin
     With VacancyListForm.ListView.Selected, NewInfo Do
     Begin
-        Caption := FirmName;
-        SubItems[0] := Speciality;
-        SubItems[1] := Title;
+        Caption := String(FirmName);
+        SubItems[0] := String(Speciality);
+        SubItems[1] := String(Title);
         SubItems[2] := IntToStr(Salary);
         SubItems[3] := IntToStr(VacationDays);
         SubItems[4] := HIGHEDUREQUIRED[IsHighEducationRequired];
         SubItems[5] := IntToStr(MinAge) + '-' + IntToStr(MaxAge);
     End;
     IsVacancyListSaved := False;
+End;
+
+Function IsVacancyInList(Info: TVacancyInfo): Boolean;
+Var
+    Temp: PVacancy;
+Begin
+    Temp := VacancyHead;
+    While (Temp <> Nil) And Not AreVacanciesEqual(Info, Temp^.Info) Do
+        Temp := Temp.Next;
+    IsVacancyInList := Temp <> Nil;
 End;
 
 Procedure EditVacancy(OldInfo, NewInfo: TVacancyInfo);
@@ -217,9 +227,9 @@ Var
 Begin
     With Vacancy, Item Do
     Begin
-        FirmName := Caption;
-        Speciality := SubItems[0];
-        Title := SubItems[1];
+        FirmName := ShortString(Caption);
+        Speciality := ShortString(SubItems[0]);
+        Title := ShortString(SubItems[1]);
         Salary := StrToInt(SubItems[2]);
         VacationDays := StrToInt(SubItems[3]);
         IsHighEducationRequired := SubItems[4] = HIGHEDUREQUIRED[True];
@@ -240,7 +250,6 @@ Begin
     Begin
         DeleteVacancy(GetVacancyInfo(ListView.Selected));
         ListView.Selected.Delete;
-        IsVacancyListSaved := False;
     End
     Else
         ListView.ClearSelection;
@@ -252,15 +261,9 @@ Begin
     FindCandidatesForm.ShowModal;
 End;
 
-Procedure TVacancyListForm.ButtonSearchClick(Sender: TObject);
-Begin
-    VacancySearchForm.Show;
-End;
-
 Procedure TVacancyListForm.ListViewChange(Sender: TObject; Item: TListItem;
   Change: TItemChange);
 Begin
-    ButtonSearch.Enabled := ListView.Items.Count > 0;
     MMSaveFile.Enabled := ListView.Items.Count > 0;
 End;
 
@@ -272,6 +275,12 @@ Begin
         IsEditing := True;
         VacancyForm.ShowModal;
     End;
+End;
+
+Procedure TVacancyListForm.ListViewDeletion(Sender: TObject; Item: TListItem);
+Begin
+    MMSaveFile.Enabled := ListView.Items.Count > 1;
+    IsVacancyListSaved := ListView.Items.Count = 1;
 End;
 
 Procedure TVacancyListForm.ListViewSelectItem(Sender: TObject; Item: TListItem;

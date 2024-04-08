@@ -4,7 +4,7 @@ object CandidateForm: TCandidateForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1050#1072#1085#1076#1080#1076#1072#1090
-  ClientHeight = 262
+  ClientHeight = 265
   ClientWidth = 268
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
