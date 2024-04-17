@@ -38,6 +38,7 @@ Type
         MMProgramInfo: TMenuItem;
         MMSeparator: TMenuItem;
         MMInstruction: TMenuItem;
+    ButtonSearch: TButton;
         Procedure ButtonAddClick(Sender: TObject);
         Procedure ListViewSelectItem(Sender: TObject; Item: TListItem;
           Selected: Boolean);
@@ -56,6 +57,9 @@ Type
         Function FormHelp(Command: Word; Data: NativeInt;
           Var CallHelp: Boolean): Boolean;
         Procedure ListViewDeletion(Sender: TObject; Item: TListItem);
+        Procedure ReadVacancyListFromFile();
+        Procedure FormCreate(Sender: TObject);
+    procedure ButtonSearchClick(Sender: TObject);
     Private
         { Private declarations }
     Public
@@ -69,14 +73,15 @@ Function IsVacancyInList(Info: TVacancyInfo): Boolean;
 
 Var
     VacancyListForm: TVacancyListForm;
-    VacancyHead: PVacancy = Nil;
-    IsVacancyListSaved: Boolean = True;
+    VacancyHead: PVacancy;
+    IsVacancyListSaved: Boolean;
+    VacancyAmount: Integer;
 
 Implementation
 
 {$R *.dfm}
 
-Uses VacancyUnit, FindCandidatesUnit;
+Uses VacancyUnit, CandidateSelectUnit, VacancySearchUnit;
 
 Const
     HIGHEDUREQUIRED: Array [Boolean] Of String = ('Не требуется', 'Требуется');
@@ -96,7 +101,6 @@ Begin
         Add(HIGHEDUREQUIRED[IsHighEducationRequired]);
         Add(IntToStr(MinAge) + '-' + IntToStr(MaxAge));
     End;
-    IsVacancyListSaved := False;
 End;
 
 Procedure AddVacancy(VacancyInfo: TVacancyInfo; Var Head: PVacancy);
@@ -161,12 +165,19 @@ Begin
     While Not AreVacanciesEqual(OldInfo, Temp^.Info) Do
         Temp := Temp^.Next;
     Temp^.Info := NewInfo;
-    EditVacancyInListView(NewInfo); // вызывать из вакансиюнит?
+    EditVacancyInListView(NewInfo);
 End;
 
 Procedure TVacancyListForm.FormClose(Sender: TObject; Var Action: TCloseAction);
 Begin
     MainForm.Visible := True;
+End;
+
+Procedure TVacancyListForm.FormCreate(Sender: TObject);
+Begin
+    VacancyHead := Nil;
+    IsVacancyListSaved := True;
+    VacancyAmount := 0;
 End;
 
 Function TVacancyListForm.FormHelp(Command: Word; Data: NativeInt;
@@ -187,38 +198,42 @@ End;
 
 Procedure DeleteVacancy(VacancyInfo: TVacancyInfo);
 Var
-    Temp1, Temp2: PVacancy;
+    Temp, Curr: PVacancy;
 Begin
-    Temp1 := VacancyHead;
-    If Not AreVacanciesEqual(VacancyInfo, Temp1^.Info) Then
-    Begin
-        While Not AreVacanciesEqual(VacancyInfo, Temp1^.Next^.Info) Do
-            Temp1 := Temp1^.Next;
-        Temp2 := Temp1;
-        Temp2^.Next := Temp1^.Next^.Next;
-        Temp1 := Temp1^.Next;
-    End
+    Temp := VacancyHead;
+    If AreVacanciesEqual(VacancyInfo, Temp^.Info) Then
+        VacancyHead := Temp^.Next
     Else
-        VacancyHead := Temp1^.Next;
-    Dispose(Temp1);
+    Begin
+        While Not AreVacanciesEqual(VacancyInfo, Temp^.Next^.Info) Do
+            Temp := Temp^.Next;
+        Curr := Temp;
+        Temp := Temp^.Next;
+        Curr^.Next := Curr^.Next^.Next;
+    End;
+    Dispose(Temp);
 End;
 
 Procedure DeleteVacancyList(Var Head: PVacancy);
 Var
-    Temp: PVacancy;
+    Curr: PVacancy;
 Begin
-    Temp := Head;
-    While Temp <> Nil Do
+    Curr := Head;
+    While Curr <> Nil Do
     Begin
         Head := Head^.Next;
-        Dispose(Temp);
-        Temp := Head;
+        Dispose(Curr);
+        Curr := Head;
     End;
 End;
 
 Procedure TVacancyListForm.ButtonAddClick(Sender: TObject);
 Begin
-    VacancyForm.ShowModal;
+    If VacancyAmount < MAXRECORDAMOUNT Then
+        VacancyForm.ShowModal
+    Else
+        Application.MessageBox('Достигнуто максимальное число вакансий!',
+          'Ошибка', MB_ICONERROR);
 End;
 
 Function GetVacancyInfo(Item: TListItem): TVacancyInfo;
@@ -250,6 +265,7 @@ Begin
     Begin
         DeleteVacancy(GetVacancyInfo(ListView.Selected));
         ListView.Selected.Delete;
+        Dec(VacancyAmount);
     End
     Else
         ListView.ClearSelection;
@@ -258,8 +274,13 @@ End;
 Procedure TVacancyListForm.ButtonFindCandidatesClick(Sender: TObject);
 Begin
     Vacancy := GetVacancyInfo(ListView.Selected);
-    FindCandidatesForm.ShowModal;
+    CandidateSelectForm.ShowModal;
 End;
+
+procedure TVacancyListForm.ButtonSearchClick(Sender: TObject);
+begin
+    VacancySearchForm.Show;
+end;
 
 Procedure TVacancyListForm.ListViewChange(Sender: TObject; Item: TListItem;
   Change: TItemChange);
@@ -290,12 +311,22 @@ Begin
     ButtonFindCandidates.Enabled := Selected;
 End;
 
-Procedure TVacancyListForm.MMOpenFileClick(Sender: TObject);
+Function IsVacancyCorrect(Vacancy: TVacancyInfo): Boolean;
+Begin
+    IsVacancyCorrect := IsNumCorrect(Vacancy.Salary, MINSALARY, MAXSALARY) And
+      IsNumCorrect(Vacancy.VacationDays, MINVACATION, MAXVACATION) And
+      IsNumCorrect(Vacancy.MinAge, MINWORKAGE, MAXWORKAGE) And
+      IsNumCorrect(Vacancy.MaxAge, MINWORKAGE, MAXWORKAGE) And
+      Not(Vacancy.MinAge > Vacancy.MaxAge);
+End;
+
+Procedure TVacancyListForm.ReadVacancyListFromFile();
 Var
     InputFile: File Of TVacancyInfo;
     VacancyInfo: TVacancyInfo;
     Head: PVacancy;
     IsCorrect: Boolean;
+    Count: Integer;
 Begin
     IsCorrect := OpenDialog.Execute And IsFileExtCorrect(OpenDialog.FileName,
       VACANCYFILEEXT);
@@ -303,13 +334,18 @@ Begin
     Begin
         Try
             Head := Nil;
+            Count := 0;
             AssignFile(InputFile, OpenDialog.FileName);
             Try
                 Reset(InputFile);
-                While Not Eof(InputFile) Do
+                If FileSize(InputFile) > MAXRECORDAMOUNT Then
+                    IsCorrect := False;
+                While Not Eof(InputFile) And IsCorrect Do
                 Begin
                     Read(InputFile, VacancyInfo);
                     AddVacancy(VacancyInfo, Head);
+                    IsCorrect := IsVacancyCorrect(VacancyInfo);
+                    Inc(Count);
                 End;
             Except
                 IsCorrect := False;
@@ -327,47 +363,61 @@ Begin
                 AddVacancyToListView(Head^.Info, ListView);
                 Head := Head^.Next;
             End;
+            VacancyAmount := Count;
             IsVacancyListSaved := True;
         End
         Else
         Begin
             DeleteVacancyList(Head);
-            Application.MessageBox('Произошла ошибка при открытии файла!',
+            Application.MessageBox
+              ('Произошла ошибка при открытии файла! Проверьте корректность данных!',
               'Ошибка', MB_ICONERROR);
         End;
     End;
 End;
 
-Procedure TVacancyListForm.MMSaveFileClick(Sender: TObject);
+Procedure TVacancyListForm.MMOpenFileClick(Sender: TObject);
+Var
+    ButtonSelected: Integer;
+Begin
+    If Not IsVacancyListSaved Then
+    Begin
+        ButtonSelected := Application.MessageBox
+          ('Вы хотите сохранить изменения в списке вакансий?', 'Выход',
+          MB_YESNOCANCEL + MB_ICONQUESTION);
+        If ButtonSelected = MrYes Then
+            MMSaveFile.Click;
+    End;
+    ReadVacancyListFromFile();
+End;
+
+Procedure SaveVacancyListToFile(Path: String);
 Var
     OutputFile: File Of TVacancyInfo;
     Temp: PVacancy;
+Begin
+    Try
+        Temp := VacancyHead;
+        AssignFile(OutputFile, Path);
+        Rewrite(OutputFile);
+        While Temp <> Nil Do
+        Begin
+            Write(OutputFile, Temp^.Info);
+            Temp := Temp^.Next;
+        End;
+    Finally
+        CloseFile(OutputFile);
+    End;
+End;
+
+Procedure TVacancyListForm.MMSaveFileClick(Sender: TObject);
+Var
     IsCorrect: Boolean;
 Begin
     IsCorrect := SaveDialog.Execute And IsFileExtCorrect(SaveDialog.FileName,
       VACANCYFILEEXT);
     If IsCorrect Then
-    Begin
-        Try
-            Temp := VacancyHead;
-            AssignFile(OutputFile, SaveDialog.FileName);
-            Try
-                Rewrite(OutputFile);
-                While Temp <> Nil Do
-                Begin
-                    Write(OutputFile, Temp^.Info);
-                    Temp := Temp^.Next;
-                End;
-            Except
-                IsCorrect := False;
-            End;
-        Finally
-            CloseFile(OutputFile);
-        End;
-        If Not IsCorrect Then
-            Application.MessageBox('Произошла ошибка при записи в файл!',
-              'Ошибка', MB_ICONERROR);
-    End;
+        SaveVacancyListToFile(SaveDialog.FileName);
     IsVacancyListSaved := IsCorrect;
 End;
 

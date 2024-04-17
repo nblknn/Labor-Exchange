@@ -77,9 +77,9 @@ Var
 Begin
     With NewInfo Do
     Begin
-        FirmName := LEditFirmName.Text;
-        Speciality := LEditSpeciality.Text;
-        Title := LEditTitle.Text;
+        FirmName := ShortString(LEditFirmName.Text);
+        Speciality := ShortString(LEditSpeciality.Text);
+        Title := ShortString(LEditTitle.Text);
         Salary := StrToInt(LEditSalary.Text);
         VacationDays := StrToInt(LEditVacationDays.Text);
         IsHighEducationRequired := CheckBoxHighEducation.Checked;
@@ -94,11 +94,13 @@ Begin
         Begin
             AddVacancy(NewInfo, VacancyHead);
             AddVacancyToListView(NewInfo, VacancyListForm.ListView);
+            Inc(VacancyAmount);
         End
         Else
             Application.MessageBox('Такая вакансия уже есть в списке!',
               'Ошибка', MB_ICONERROR);
     End;
+    IsVacancyListSaved := False;
     Close;
 End;
 
@@ -149,9 +151,9 @@ Begin
     If IsEditing Then
         With OldInfo Do
         Begin
-            LEditFirmName.Text := FirmName;
-            LEditSpeciality.Text := Speciality;
-            LEditTitle.Text := Title;
+            LEditFirmName.Text := String(FirmName);
+            LEditSpeciality.Text := String(Speciality);
+            LEditTitle.Text := String(Title);
             LEditSalary.Text := IntToStr(Salary);
             LEditVacationDays.Text := IntToStr(VacationDays);
             CheckBoxHighEducation.Checked := IsHighEducationRequired;

@@ -4,8 +4,8 @@ object CandidateListForm: TCandidateListForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1057#1087#1080#1089#1086#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074
-  ClientHeight = 381
-  ClientWidth = 760
+  ClientHeight = 382
+  ClientWidth = 758
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,6 +16,7 @@ object CandidateListForm: TCandidateListForm
   Menu = MainMenu
   Position = poScreenCenter
   OnClose = FormClose
+  OnCreate = FormCreate
   OnHelp = FormHelp
   OnKeyDown = FormKeyDown
   TextHeight = 20
@@ -48,7 +49,7 @@ object CandidateListForm: TCandidateListForm
       item
         Caption = #1057#1087#1077#1094#1080#1072#1083#1100#1085#1086#1089#1090#1100
         MinWidth = 50
-        Width = 110
+        Width = 100
       end
       item
         Caption = #1042#1099#1089#1096#1077#1077' '#1086#1073#1088#1072#1079#1086#1074#1072#1085#1080#1077
@@ -61,9 +62,9 @@ object CandidateListForm: TCandidateListForm
         Width = 95
       end
       item
-        Caption = #1054#1082#1083#1072#1076
+        Caption = #1054#1082#1083#1072#1076', '#1088#1091#1073'.'
         MinWidth = 50
-        Width = 70
+        Width = 80
       end>
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -84,16 +85,16 @@ object CandidateListForm: TCandidateListForm
   object ButtonAdd: TButton
     Left = 8
     Top = 8
-    Width = 185
+    Width = 169
     Height = 42
     Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
     TabOrder = 0
     OnClick = ButtonAddClick
   end
   object ButtonDelete: TButton
-    Left = 280
+    Left = 199
     Top = 8
-    Width = 185
+    Width = 170
     Height = 42
     Caption = #1059#1076#1072#1083#1080#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
     Enabled = False
@@ -101,15 +102,24 @@ object CandidateListForm: TCandidateListForm
     OnClick = ButtonDeleteClick
   end
   object ButtonDeficite: TButton
-    Left = 567
+    Left = 584
     Top = 8
-    Width = 185
+    Width = 168
     Height = 42
     Caption = #1057#1087#1080#1089#1086#1082' '#1076#1077#1092#1080#1094#1080#1090#1085#1099#1093' '#1089#1087#1077#1094#1080#1072#1083#1080#1089#1090#1086#1074
     Enabled = False
     TabOrder = 2
     WordWrap = True
     OnClick = ButtonDeficiteClick
+  end
+  object ButtonSearch: TButton
+    Left = 391
+    Top = 8
+    Width = 170
+    Height = 42
+    Caption = #1055#1086#1080#1089#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
+    TabOrder = 4
+    OnClick = ButtonSearchClick
   end
   object MainMenu: TMainMenu
     Left = 312
@@ -153,7 +163,7 @@ object CandidateListForm: TCandidateListForm
   object SaveDialog: TSaveDialog
     DefaultExt = '*.can'
     Filter = #1057#1087#1080#1089#1086#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074' (*.can)|*.can'
-    Left = 424
-    Top = 192
+    Left = 522
+    Top = 240
   end
 end

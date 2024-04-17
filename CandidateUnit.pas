@@ -61,13 +61,13 @@ Var
 Begin
     With NewInfo Do
     Begin
-        Surname := LEditSurname.Text;
-        Name := LEditName.Text;
-        Patronymic := LEditPatronymic.Text;
-        Speciality := LEditSpeciality.Text;
-        BirthDate := DateTimePicker.DateTime;
+        Surname := ShortString(LEditSurname.Text);
+        Name := ShortString(LEditName.Text);
+        Patronymic := ShortString(LEditPatronymic.Text);
+        Speciality := ShortString(LEditSpeciality.Text);
+        BirthDate := DateTimePicker.Date;
         HasHighEducation := CheckBoxHighEducation.Checked;
-        Title := LEditTitle.Text;
+        Title := ShortString(LEditTitle.Text);
         Salary := StrToInt(LEditSalary.Text);
     End;
     If IsEditing Then
@@ -78,11 +78,13 @@ Begin
         Begin
             AddCandidate(NewInfo, CandidateHead);
             AddCandidateToListView(NewInfo, CandidateListForm.ListView);
+            Inc(CandidateAmount);
         End
         Else
             Application.MessageBox('Такой кандидат уже есть в списке!',
               'Ошибка', MB_ICONERROR);
     End;
+    IsCandidateListSaved := False;
     Close;
 End;
 
@@ -145,13 +147,13 @@ Begin
     If IsEditing Then
         With OldInfo Do
         Begin
-            LEditSurname.Text := Surname;
-            LEditName.Text := Name;
-            LEditPatronymic.Text := Patronymic;
+            LEditSurname.Text := String(Surname);
+            LEditName.Text := String(Name);
+            LEditPatronymic.Text := String(Patronymic);
             DateTimePicker.DateTime := BirthDate;
-            LEditSpeciality.Text := Speciality;
+            LEditSpeciality.Text := String(Speciality);
             CheckBoxHighEducation.Checked := HasHighEducation;
-            LEditTitle.Text := Title;
+            LEditTitle.Text := String(Title);
             LEditSalary.Text := IntToStr(Salary);
         End;
 End;

@@ -56,7 +56,8 @@ Begin
     I := 0;
     While Not IsInArray And (I < Length(TitleArr)) Do
     Begin
-        If AnsiUpperCase(Title) = AnsiUpperCase(TitleArr[I].Title) Then
+        If AnsiUpperCase(String(Title)) = AnsiUpperCase
+          (String(TitleArr[I].Title)) Then
             IsInArray := True;
         Inc(I);
     End;
@@ -103,7 +104,7 @@ Begin
     End;
 End;
 
-Procedure FindDeficiteCandidates();
+Procedure FindDeficitCandidates();
 Var
     I: Integer;
     Temp: PCandidate;
@@ -114,8 +115,8 @@ Begin
             Temp := CandidateHead;
             While Temp <> Nil Do
             Begin
-                If AnsiUpperCase(Temp^.Info.Title)
-                  = AnsiUpperCase(TitleArr[I].Title) Then
+                If AnsiUpperCase(String(Temp^.Info.Title))
+                  = AnsiUpperCase(String(TitleArr[I].Title)) Then
                 Begin
                     AddCandidate(Temp^.Info, Head);
                     AddCandidateToListView(Temp^.Info, DeficitForm.ListView);
@@ -150,7 +151,8 @@ Procedure TDeficitForm.FormShow(Sender: TObject);
 Begin
     FindAllVacancyTitles();
     CountCandidates();
-    FindDeficiteCandidates();
+    FindDeficitCandidates();
+    MMSaveFile.Enabled := Head <> Nil;
 End;
 
 Procedure TDeficitForm.MMSaveFileClick(Sender: TObject);

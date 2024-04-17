@@ -4,8 +4,8 @@ object VacancyForm: TVacancyForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1042#1072#1082#1072#1085#1089#1080#1103
-  ClientHeight = 275
-  ClientWidth = 290
+  ClientHeight = 272
+  ClientWidth = 279
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,14 +19,14 @@ object VacancyForm: TVacancyForm
   OnShow = FormShow
   TextHeight = 15
   object LabelHighEducation: TLabel
-    Left = 32
+    Left = 21
     Top = 153
     Width = 122
     Height = 15
     Caption = #1042#1099#1089#1096#1077#1077' '#1086#1073#1088#1072#1079#1086#1074#1072#1085#1080#1077':'
   end
   object ButtonSave: TButton
-    Left = 31
+    Left = 20
     Top = 241
     Width = 103
     Height = 25
@@ -36,7 +36,7 @@ object VacancyForm: TVacancyForm
     OnClick = ButtonSaveClick
   end
   object ButtonCancel: TButton
-    Left = 160
+    Left = 149
     Top = 241
     Width = 103
     Height = 25
@@ -45,7 +45,7 @@ object VacancyForm: TVacancyForm
     OnClick = ButtonCancelClick
   end
   object CheckBoxHighEducation: TCheckBox
-    Left = 160
+    Left = 149
     Top = 153
     Width = 97
     Height = 17
@@ -54,7 +54,7 @@ object VacancyForm: TVacancyForm
     OnKeyDown = ControlOnKeyDown
   end
   object LEditFirmName: TLabeledEdit
-    Left = 160
+    Left = 149
     Top = 8
     Width = 121
     Height = 23
@@ -73,7 +73,7 @@ object VacancyForm: TVacancyForm
     OnKeyPress = LEditFirmNameKeyPress
   end
   object LEditSpeciality: TLabeledEdit
-    Left = 160
+    Left = 149
     Top = 37
     Width = 121
     Height = 23
@@ -92,7 +92,7 @@ object VacancyForm: TVacancyForm
     OnKeyPress = LEditSpecialityKeyPress
   end
   object LEditTitle: TLabeledEdit
-    Left = 160
+    Left = 149
     Top = 66
     Width = 121
     Height = 23
@@ -111,14 +111,14 @@ object VacancyForm: TVacancyForm
     OnKeyPress = LEditTitleKeyPress
   end
   object LEditSalary: TLabeledEdit
-    Left = 160
+    Left = 149
     Top = 95
     Width = 121
     Height = 23
     Hint = '1..99999'
-    EditLabel.Width = 37
+    EditLabel.Width = 66
     EditLabel.Height = 23
-    EditLabel.Caption = #1054#1082#1083#1072#1076':'
+    EditLabel.Caption = #1054#1082#1083#1072#1076', '#1088#1091#1073'.:'
     LabelPosition = lpLeft
     NumbersOnly = True
     ParentShowHint = False
@@ -131,7 +131,7 @@ object VacancyForm: TVacancyForm
     OnKeyPress = LEditSalaryKeyPress
   end
   object LEditVacationDays: TLabeledEdit
-    Left = 160
+    Left = 149
     Top = 124
     Width = 121
     Height = 23
@@ -151,7 +151,7 @@ object VacancyForm: TVacancyForm
     OnKeyPress = LEditVacationDaysKeyPress
   end
   object LEditMinAge: TLabeledEdit
-    Left = 160
+    Left = 149
     Top = 176
     Width = 121
     Height = 23
@@ -171,7 +171,7 @@ object VacancyForm: TVacancyForm
     OnKeyPress = LEditMinAgeKeyPress
   end
   object LEditMaxAge: TLabeledEdit
-    Left = 160
+    Left = 149
     Top = 207
     Width = 121
     Height = 23

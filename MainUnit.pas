@@ -26,10 +26,6 @@ Type
         Procedure MMInstructionClick(Sender: TObject);
         Procedure MMProgramInfoClick(Sender: TObject);
         Procedure FormResize(Sender: TObject);
-    Private
-        { Private declarations }
-    Public
-        { Public declarations }
     End;
 
 Const
@@ -40,23 +36,26 @@ Const
     MAXVACATION = 99;
     MINWORKAGE = 14;
     MAXWORKAGE = 99;
+    MAXRECORDAMOUNT = 100;
     CANDIDATEFILEEXT = '.can';
     VACANCYFILEEXT = '.vac';
     NULL = #0;
     BACKSPACE = #8;
 
 Function IsFileExtCorrect(Path: String; Const EXT: String): Boolean;
-Procedure SelectItemInListView(I: Integer; ListView: TListView);
 Procedure ClearListView(ListView: TListView);
 Procedure StrEditKeyPress(LEdit: TLabeledEdit; Var Key: Char;
   Const MAXLENGTH: Integer);
 Procedure IntEditKeyPress(LEdit: TLabeledEdit; Var Key: Char;
   Const MAX: Integer);
+Function IsNumCorrect(Value: Integer;
+  Const MINVALUE, MAXVALUE: Integer): Boolean;
 Function IsStrEditCorrect(LEdit: TLabeledEdit): Boolean;
 Function IsIntEditCorrect(LEdit: TLabeledEdit;
   Const MINVALUE, MAXVALUE: Integer): Boolean;
 Procedure ShowInstruction();
 Procedure ShowProgramInfo();
+Procedure SelectItemInListView(I: Integer; ListView: TListView);
 
 Var
     MainForm: TMainForm;
@@ -73,13 +72,19 @@ Begin
       (Length(LEdit.Text) < MAXLEN + 1);
 End;
 
+Function IsNumCorrect(Value: Integer;
+  Const MINVALUE, MAXVALUE: Integer): Boolean;
+Begin
+    IsNumCorrect := (Value > MINVALUE - 1) And (Value < MAXVALUE + 1);
+End;
+
 Function IsIntEditCorrect(LEdit: TLabeledEdit;
   Const MINVALUE, MAXVALUE: Integer): Boolean;
 Var
     Value: Integer;
 Begin
     IsIntEditCorrect := TryStrToInt(LEdit.Text, Value) And
-      (Value > MINVALUE - 1) And (Value < MAXVALUE + 1);
+      IsNumCorrect(Value, MINVALUE, MAXVALUE);
 End;
 
 Procedure StrEditKeyPress(LEdit: TLabeledEdit; Var Key: Char;
@@ -148,7 +153,7 @@ Begin
         End
         Else
             CanClose := IsCandidateListSaved And (ButtonSelected = MrNo);
-        IsVacancyListSaved := True; // костыли
+        IsVacancyListSaved := True;
     End;
     If Not IsCandidateListSaved Then
     Begin
@@ -180,8 +185,10 @@ Begin
       + '2. Для редактирования записи нажмите дважды на нужную строку списка.'#13#10
       + '3. Для удаления записи выберите ее в списке и нажмите на кнопку "Удалить".'#13#10
       + '4. Для подбора кандидатов для вакансии выберите нужную вакансию в списке и нажмите на кнопку "Подобрать кандидатов".'#13#10
-      + '5. Формат для файлов с вакансиями: *.vac.'#13#10 +
-      '6. Формат для файлов с кандидатами: *.can.', 'Инструкция', MB_OK);
+      + '5. Для просмотра дефицитных специалистов нажмите соответствующую кнопку в окне списка с кандидатами.'#13#10
+      + '6. Максимальное количество записей в каждом списке - 100.'#13#10 +
+      '7. Для возвращения в главное меню закройте окно со списком или нажмите Esc.'#13#10 + '8. Формат для файлов с вакансиями: *.vac.'#13#10 +
+      '9. Формат для файлов с кандидатами: *.can.', 'Инструкция', MB_OK);
 End;
 
 Procedure ShowProgramInfo();

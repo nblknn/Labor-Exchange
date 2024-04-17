@@ -7,10 +7,12 @@ uses
   VacancyUnit in 'VacancyUnit.pas' {VacancyForm},
   CandidateListUnit in 'CandidateListUnit.pas' {CandidateListForm},
   CandidateUnit in 'CandidateUnit.pas' {CandidateForm},
-  FindCandidatesUnit in 'FindCandidatesUnit.pas' {FindCandidatesForm},
+  CandidateSelectUnit in 'CandidateSelectUnit.pas' {CandidateSelectForm},
   DeficitUnit in 'DeficitUnit.pas' {DeficitForm},
   Vcl.Themes,
-  Vcl.Styles;
+  Vcl.Styles,
+  CandidateSearchUnit in 'CandidateSearchUnit.pas' {CandidateSearchForm},
+  VacancySearchUnit in 'VacancySearchUnit.pas' {VacancySearchForm};
 
 {$R *.res}
 
@@ -23,8 +25,10 @@ Begin
   Application.CreateForm(TVacancyForm, VacancyForm);
   Application.CreateForm(TCandidateListForm, CandidateListForm);
   Application.CreateForm(TCandidateForm, CandidateForm);
-  Application.CreateForm(TFindCandidatesForm, FindCandidatesForm);
+  Application.CreateForm(TCandidateSelectForm, CandidateSelectForm);
   Application.CreateForm(TDeficitForm, DeficitForm);
+  Application.CreateForm(TCandidateSearchForm, CandidateSearchForm);
+  Application.CreateForm(TVacancySearchForm, VacancySearchForm);
   Application.Run;
 
 End.

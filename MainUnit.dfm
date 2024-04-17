@@ -4,10 +4,10 @@ object MainForm: TMainForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1041#1080#1088#1078#1072' '#1090#1088#1091#1076#1072
-  ClientHeight = 222
+  ClientHeight = 231
   ClientWidth = 244
   Color = clBtnFace
-  Constraints.MaxHeight = 283
+  Constraints.MaxHeight = 300
   Constraints.MaxWidth = 258
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -61,8 +61,8 @@ object MainForm: TMainForm
     OnClick = ButtonExitClick
   end
   object MainMenu: TMainMenu
-    Left = 40
-    Top = 40
+    Left = 208
+    Top = 65520
     object MMHelp: TMenuItem
       Caption = #1057#1087#1088#1072#1074#1082#1072
       object MMInstruction: TMenuItem

@@ -37,6 +37,7 @@ Type
         MMProgramInfo: TMenuItem;
         MMSeparator: TMenuItem;
         MMInstruction: TMenuItem;
+    ButtonSearch: TButton;
         Procedure ButtonAddClick(Sender: TObject);
         Procedure FormKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
@@ -46,7 +47,6 @@ Type
         Procedure ListViewDblClick(Sender: TObject);
         Procedure ListViewSelectItem(Sender: TObject; Item: TListItem;
           Selected: Boolean);
-        Procedure MMOpenFileClick(Sender: TObject);
         Procedure MMSaveFileClick(Sender: TObject);
         Procedure ButtonDeficiteClick(Sender: TObject);
         Procedure FormClose(Sender: TObject; Var Action: TCloseAction);
@@ -55,6 +55,10 @@ Type
         Function FormHelp(Command: Word; Data: NativeInt;
           Var CallHelp: Boolean): Boolean;
         Procedure ListViewDeletion(Sender: TObject; Item: TListItem);
+        Procedure FormCreate(Sender: TObject);
+        Procedure ReadCandidateListFromFile();
+        Procedure MMOpenFileClick(Sender: TObject);
+    procedure ButtonSearchClick(Sender: TObject);
     Private
         { Private declarations }
     Public
@@ -66,19 +70,20 @@ Procedure AddCandidateToListView(CandidateInfo: TCandidateInfo;
 Procedure AddCandidate(CandidateInfo: TCandidateInfo; Var Head: PCandidate);
 Procedure EditCandidate(OldInfo, NewInfo: TCandidateInfo);
 Procedure DeleteCandidateList(Var Head: PCandidate);
-Function SaveCandidateListToFile(Head: PCandidate; Path: String): Boolean;
+Procedure SaveCandidateListToFile(Head: PCandidate; Path: String);
 Function IsCandidateInList(Info: TCandidateInfo): Boolean;
 
 Var
     CandidateListForm: TCandidateListForm;
-    CandidateHead: PCandidate = Nil;
-    IsCandidateListSaved: Boolean = True;
+    CandidateHead: PCandidate;
+    IsCandidateListSaved: Boolean;
+    CandidateAmount: Integer;
 
 Implementation
 
 {$R *.dfm}
 
-Uses CandidateUnit, DeficitUnit;
+Uses CandidateUnit, DeficitUnit, DateUtils, CandidateSearchUnit;
 
 Const
     HIGHEDUCATION: Array [Boolean] Of String = ('Нет', 'Есть');
@@ -89,18 +94,17 @@ Var
     NewItem: TListItem;
 Begin
     NewItem := ListView.Items.Add;
-    NewItem.Caption := CandidateInfo.Surname;
+    NewItem.Caption := String(CandidateInfo.Surname);
     With NewItem.SubItems, CandidateInfo Do
     Begin
-        Add(Name);
-        Add(Patronymic);
+        Add(String(Name));
+        Add(String(Patronymic));
         Add(DateToStr(BirthDate));
-        Add(Speciality);
+        Add(String(Speciality));
         Add(HIGHEDUCATION[HasHighEducation]);
-        Add(Title);
+        Add(String(Title));
         Add(IntToStr(Salary));
     End;
-    IsCandidateListSaved := False;
 End;
 
 Procedure AddCandidate(CandidateInfo: TCandidateInfo; Var Head: PCandidate);
@@ -137,13 +141,13 @@ Procedure EditCandidateInListView(NewInfo: TCandidateInfo);
 Begin
     With CandidateListForm.ListView.Selected, NewInfo Do
     Begin
-        Caption := Surname;
-        SubItems[0] := Name;
-        SubItems[1] := Patronymic;
+        Caption := String(Surname);
+        SubItems[0] := String(Name);
+        SubItems[1] := String(Patronymic);
         SubItems[2] := DateToStr(BirthDate);
-        SubItems[3] := Speciality;
+        SubItems[3] := String(Speciality);
         SubItems[4] := HIGHEDUCATION[HasHighEducation];
-        SubItems[5] := Title;
+        SubItems[5] := String(Title);
         SubItems[6] := IntToStr(Salary);
     End;
     IsCandidateListSaved := False;
@@ -172,20 +176,20 @@ End;
 
 Procedure DeleteCandidate(CandidateInfo: TCandidateInfo);
 Var
-    Temp1, Temp2: PCandidate;
+    Temp, Curr: PCandidate;
 Begin
-    Temp1 := CandidateHead;
-    If Not AreCandidatesEqual(CandidateInfo, Temp1^.Info) Then
+    Temp := CandidateHead;
+    If Not AreCandidatesEqual(CandidateInfo, Temp^.Info) Then
     Begin
-        While Not AreCandidatesEqual(CandidateInfo, Temp1^.Next^.Info) Do
-            Temp1 := Temp1^.Next;
-        Temp2 := Temp1;
-        Temp2^.Next := Temp1^.Next^.Next;
-        Temp1 := Temp1^.Next;
+        While Not AreCandidatesEqual(CandidateInfo, Temp^.Next^.Info) Do
+            Temp := Temp^.Next;
+        Curr := Temp;
+        Temp := Temp^.Next;
+        Curr^.Next := Curr^.Next^.Next;
     End
     Else
-        CandidateHead := Temp1^.Next;
-    Dispose(Temp1);
+        CandidateHead := Temp^.Next;
+    Dispose(Temp);
 End;
 
 Procedure DeleteCandidateList(Var Head: PCandidate);
@@ -207,13 +211,13 @@ Var
 Begin
     With Candidate, Item Do
     Begin
-        Surname := Caption;
-        Name := SubItems[0];
-        Patronymic := SubItems[1];
+        Surname := ShortString(Caption);
+        Name := ShortString(SubItems[0]);
+        Patronymic := ShortString(SubItems[1]);
         BirthDate := StrToDate(SubItems[2]);
-        Speciality := SubItems[3];
+        Speciality := ShortString(SubItems[3]);
         HasHighEducation := HIGHEDUCATION[True] = SubItems[4];
-        Title := SubItems[5];
+        Title := ShortString(SubItems[5]);
         Salary := StrToInt(SubItems[6]);
     End;
     GetCandidateInfo := Candidate;
@@ -221,7 +225,11 @@ End;
 
 Procedure TCandidateListForm.ButtonAddClick(Sender: TObject);
 Begin
-    CandidateForm.ShowModal;
+    If CandidateAmount < MAXRECORDAMOUNT Then
+        CandidateForm.ShowModal
+    Else
+        Application.MessageBox('Достигнуто максимальное число кандидатов!',
+          'Ошибка', MB_ICONERROR);
 End;
 
 Procedure TCandidateListForm.ButtonDeficiteClick(Sender: TObject);
@@ -240,15 +248,28 @@ Begin
     Begin
         DeleteCandidate(GetCandidateInfo(ListView.Selected));
         ListView.Selected.Delete;
+        Dec(CandidateAmount);
     End
     Else
         ListView.ClearSelection;
 End;
 
+procedure TCandidateListForm.ButtonSearchClick(Sender: TObject);
+begin
+    CandidateSearchForm.Show;
+end;
+
 Procedure TCandidateListForm.FormClose(Sender: TObject;
   Var Action: TCloseAction);
 Begin
     MainForm.Visible := True;
+End;
+
+Procedure TCandidateListForm.FormCreate(Sender: TObject);
+Begin
+    CandidateHead := Nil;
+    IsCandidateListSaved := True;
+    CandidateAmount := 0;
 End;
 
 Function TCandidateListForm.FormHelp(Command: Word; Data: NativeInt;
@@ -304,10 +325,33 @@ End;
 
 Procedure TCandidateListForm.MMOpenFileClick(Sender: TObject);
 Var
+    ButtonSelected: Integer;
+Begin
+    If Not IsCandidateListSaved Then
+    Begin
+        ButtonSelected := Application.MessageBox
+          ('Вы хотите сохранить изменения в списке кандидатов?', 'Выход',
+          MB_YESNOCANCEL + MB_ICONQUESTION);
+        If ButtonSelected = MrYes Then
+            MMSaveFile.Click;
+    End;
+    ReadCandidateListFromFile();
+End;
+
+Function IsCandidateCorrect(Candidate: TCandidateInfo): Boolean;
+Begin
+    IsCandidateCorrect := IsNumCorrect(Candidate.Salary, MINSALARY, MAXSALARY)
+      And IsNumCorrect(YearsBetween(Now, Candidate.BirthDate), MINWORKAGE,
+      MAXWORKAGE);
+End;
+
+Procedure TCandidateListForm.ReadCandidateListFromFile();
+Var
     InputFile: File Of TCandidateInfo;
     CandidateInfo: TCandidateInfo;
     Head: PCandidate;
     IsCorrect: Boolean;
+    Count: Integer;
 Begin
     IsCorrect := OpenDialog.Execute And IsFileExtCorrect(OpenDialog.FileName,
       CANDIDATEFILEEXT);
@@ -315,13 +359,18 @@ Begin
     Begin
         Try
             Head := Nil;
+            Count := 0;
             AssignFile(InputFile, OpenDialog.FileName);
             Try
                 Reset(InputFile);
-                While Not Eof(InputFile) Do
+                If FileSize(InputFile) > MAXRECORDAMOUNT Then
+                    IsCorrect := False;
+                While Not Eof(InputFile) And IsCorrect Do
                 Begin
                     Read(InputFile, CandidateInfo);
                     AddCandidate(CandidateInfo, Head);
+                    IsCorrect := IsCandidateCorrect(CandidateInfo);
+                    Inc(Count);
                 End;
             Except
                 IsCorrect := False;
@@ -339,12 +388,14 @@ Begin
                 AddCandidateToListView(Head^.Info, ListView);
                 Head := Head^.Next;
             End;
+            CandidateAmount := Count;
             IsCandidateListSaved := True;
         End
         Else
         Begin
             DeleteCandidateList(Head);
-            Application.MessageBox('Произошла ошибка при открытии файла!',
+            Application.MessageBox
+              ('Произошла ошибка при открытии файла! Проверьте корректность данных!',
               'Ошибка', MB_ICONERROR);
         End;
     End;
@@ -355,41 +406,34 @@ Begin
     ShowProgramInfo();
 End;
 
-Function SaveCandidateListToFile(Head: PCandidate; Path: String): Boolean;
+Procedure SaveCandidateListToFile(Head: PCandidate; Path: String);
 Var
     OutputFile: File Of TCandidateInfo;
     Temp: PCandidate;
-    IsCorrect: Boolean;
 Begin
-    IsCorrect := IsFileExtCorrect(Path, CANDIDATEFILEEXT);
-    If IsCorrect Then
-        Try
-            Temp := Head;
-            AssignFile(OutputFile, Path);
-            Try
-                Rewrite(OutputFile);
-                While Temp <> Nil Do
-                Begin
-                    Write(OutputFile, Temp^.Info);
-                    Temp := Temp^.Next;
-                End;
-            Except
-                IsCorrect := False;
-            End;
-        Finally
-            CloseFile(OutputFile);
+    Try
+        Temp := Head;
+        AssignFile(OutputFile, Path);
+        Rewrite(OutputFile);
+        While Temp <> Nil Do
+        Begin
+            Write(OutputFile, Temp^.Info);
+            Temp := Temp^.Next;
         End;
-    If Not IsCorrect Then
-        Application.MessageBox('Произошла ошибка при записи в файл!', 'Ошибка',
-          MB_ICONERROR);
-    SaveCandidateListToFile := IsCorrect;
+    Finally
+        CloseFile(OutputFile);
+    End;
 End;
 
 Procedure TCandidateListForm.MMSaveFileClick(Sender: TObject);
+Var
+    IsCorrect: Boolean;
 Begin
-    If SaveDialog.Execute Then
-        IsCandidateListSaved := SaveCandidateListToFile(CandidateHead,
-          SaveDialog.FileName);
+    IsCorrect := SaveDialog.Execute And IsFileExtCorrect(SaveDialog.FileName,
+      CANDIDATEFILEEXT);
+    If IsCorrect Then
+        SaveCandidateListToFile(CandidateHead, SaveDialog.FileName);
+    IsCandidateListSaved := IsCorrect;
 End;
 
 End.

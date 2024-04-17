@@ -46,21 +46,21 @@ Type
 
 Function AreSurnamesEqual(Surname: ShortString; Candidate: PCandidate): Boolean;
 Begin
-    AreSurnamesEqual := AnsiUpperCase(Candidate.Info.Surname)
-      = AnsiUpperCase(Surname);
+    AreSurnamesEqual := AnsiUpperCase(String(Candidate.Info.Surname))
+      = AnsiUpperCase(String(Surname));
 End;
 
 Function AreSpecialitiesEqual(Spec: ShortString; Candidate: PCandidate)
   : Boolean;
 Begin
-    AreSpecialitiesEqual := AnsiUpperCase(Candidate.Info.Speciality)
-      = AnsiUpperCase(Spec);
+    AreSpecialitiesEqual := AnsiUpperCase(String(Candidate.Info.Speciality))
+      = AnsiUpperCase(String(Spec));
 End;
 
 Function AreTitlesEqual(Title: ShortString; Candidate: PCandidate): Boolean;
 Begin
-    AreTitlesEqual := AnsiUpperCase(Candidate.Info.Title)
-      = AnsiUpperCase(Title);
+    AreTitlesEqual := AnsiUpperCase(String(Candidate.Info.Title))
+      = AnsiUpperCase(String(Title));
 End;
 
 Const
@@ -97,7 +97,7 @@ End;
 Procedure TCandidateSearchForm.ButtonSearchClick(Sender: TObject);
 Begin
     FoundIndexes := Nil;
-    Search(EditValue.Text);
+    Search(ShortString(EditValue.Text));
     Count := Length(FoundIndexes);
     If Count = 0 Then
         LabelInfo.Caption := 'Кандидаты не были найдены.'

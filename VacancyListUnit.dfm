@@ -18,6 +18,7 @@ object VacancyListForm: TVacancyListForm
   Menu = MainMenu
   Position = poScreenCenter
   OnClose = FormClose
+  OnCreate = FormCreate
   OnHelp = FormHelp
   OnKeyDown = FormKeyDown
   TextHeight = 20
@@ -40,12 +41,12 @@ object VacancyListForm: TVacancyListForm
       item
         Caption = #1044#1086#1083#1078#1085#1086#1089#1090#1100
         MinWidth = 50
-        Width = 100
+        Width = 90
       end
       item
-        Caption = #1054#1082#1083#1072#1076
+        Caption = #1054#1082#1083#1072#1076', '#1088#1091#1073'.'
         MinWidth = 50
-        Width = 70
+        Width = 80
       end
       item
         Caption = #1044#1085#1077#1081' '#1086#1090#1087#1091#1089#1082#1072
@@ -81,16 +82,16 @@ object VacancyListForm: TVacancyListForm
   object ButtonAdd: TButton
     Left = 8
     Top = 8
-    Width = 185
+    Width = 169
     Height = 42
     Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074#1072#1082#1072#1085#1089#1080#1102
     TabOrder = 0
     OnClick = ButtonAddClick
   end
   object ButtonDelete: TButton
-    Left = 280
-    Top = 8
-    Width = 185
+    Left = 200
+    Top = 7
+    Width = 169
     Height = 42
     Caption = #1059#1076#1072#1083#1080#1090#1100' '#1074#1072#1082#1072#1085#1089#1080#1102
     Enabled = False
@@ -98,18 +99,27 @@ object VacancyListForm: TVacancyListForm
     OnClick = ButtonDeleteClick
   end
   object ButtonFindCandidates: TButton
-    Left = 563
+    Left = 582
     Top = 8
-    Width = 185
-    Height = 42
+    Width = 169
+    Height = 41
     Caption = #1055#1086#1076#1086#1073#1088#1072#1090#1100' '#1082#1072#1085#1076#1080#1076#1072#1090#1086#1074
     Enabled = False
     TabOrder = 2
     OnClick = ButtonFindCandidatesClick
   end
+  object ButtonSearch: TButton
+    Left = 392
+    Top = 7
+    Width = 169
+    Height = 42
+    Caption = #1055#1086#1080#1089#1082' '#1074#1072#1082#1072#1085#1089#1080#1080
+    TabOrder = 4
+    OnClick = ButtonSearchClick
+  end
   object MainMenu: TMainMenu
-    Left = 264
-    Top = 65528
+    Left = 653
+    Top = 334
     object MMFile: TMenuItem
       Caption = #1060#1072#1081#1083
       object MMOpenFile: TMenuItem
@@ -143,13 +153,13 @@ object VacancyListForm: TVacancyListForm
   object SaveDialog: TSaveDialog
     DefaultExt = '*.vac'
     Filter = #1057#1087#1080#1089#1086#1082' '#1074#1072#1082#1072#1085#1089#1080#1081' (*.vac)|*.vac'
-    Left = 304
-    Top = 120
+    Left = 612
+    Top = 334
   end
   object OpenDialog: TOpenDialog
     DefaultExt = '*.vac'
     Filter = #1057#1087#1080#1089#1086#1082' '#1074#1072#1082#1072#1085#1089#1080#1081' (*.vac)|*.vac'
-    Left = 544
-    Top = 120
+    Left = 696
+    Top = 334
   end
 end

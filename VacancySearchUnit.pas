@@ -47,19 +47,20 @@ Type
 
 Function AreFirmNamesEqual(Name: ShortString; Vacancy: PVacancy): Boolean;
 Begin
-    AreFirmNamesEqual := AnsiUpperCase(Vacancy.Info.FirmName)
-      = AnsiUpperCase(Name);
+    AreFirmNamesEqual := AnsiUpperCase(String(Vacancy.Info.FirmName))
+      = AnsiUpperCase(String(Name));
 End;
 
 Function AreSpecialitiesEqual(Spec: ShortString; Vacancy: PVacancy): Boolean;
 Begin
-    AreSpecialitiesEqual := AnsiUpperCase(Vacancy.Info.Speciality)
-      = AnsiUpperCase(Spec);
+    AreSpecialitiesEqual := AnsiUpperCase(String(Vacancy.Info.Speciality))
+      = AnsiUpperCase(String(Spec));
 End;
 
 Function AreTitlesEqual(Title: ShortString; Vacancy: PVacancy): Boolean;
 Begin
-    AreTitlesEqual := AnsiUpperCase(Vacancy.Info.Title) = AnsiUpperCase(Title);
+    AreTitlesEqual := AnsiUpperCase(String(Vacancy.Info.Title))
+      = AnsiUpperCase(String(Title));
 End;
 
 Const
@@ -96,7 +97,7 @@ End;
 Procedure TVacancySearchForm.ButtonSearchClick(Sender: TObject);
 Begin
     FoundIndexes := Nil;
-    Search(EditValue.Text);
+    Search(ShortString(EditValue.Text));
     Count := Length(FoundIndexes);
     If Count = 0 Then
         LabelInfo.Caption := 'Вакансии не были найдены.'

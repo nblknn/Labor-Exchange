@@ -4,8 +4,8 @@ object CandidateForm: TCandidateForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1050#1072#1085#1076#1080#1076#1072#1090
-  ClientHeight = 265
-  ClientWidth = 268
+  ClientHeight = 264
+  ClientWidth = 277
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,21 +20,21 @@ object CandidateForm: TCandidateForm
   OnShow = FormShow
   TextHeight = 15
   object LabelHighEducation: TLabel
-    Left = 8
+    Left = 27
     Top = 153
     Width = 122
     Height = 15
     Caption = #1042#1099#1089#1096#1077#1077' '#1086#1073#1088#1072#1079#1086#1074#1072#1085#1080#1077':'
   end
   object LabelBirthdate: TLabel
-    Left = 43
+    Left = 62
     Top = 95
     Width = 86
     Height = 15
     Caption = #1044#1072#1090#1072' '#1088#1086#1078#1076#1077#1085#1080#1103':'
   end
   object ButtonSave: TButton
-    Left = 8
+    Left = 27
     Top = 234
     Width = 103
     Height = 25
@@ -44,7 +44,7 @@ object CandidateForm: TCandidateForm
     OnClick = ButtonSaveClick
   end
   object ButtonCancel: TButton
-    Left = 153
+    Left = 154
     Top = 234
     Width = 103
     Height = 25
@@ -53,7 +53,7 @@ object CandidateForm: TCandidateForm
     OnClick = ButtonCancelClick
   end
   object CheckBoxHighEducation: TCheckBox
-    Left = 135
+    Left = 154
     Top = 153
     Width = 97
     Height = 17
@@ -62,7 +62,7 @@ object CandidateForm: TCandidateForm
     OnKeyDown = ControlOnKeyDown
   end
   object DateTimePicker: TDateTimePicker
-    Left = 135
+    Left = 154
     Top = 95
     Width = 120
     Height = 23
@@ -74,7 +74,7 @@ object CandidateForm: TCandidateForm
     OnKeyDown = ControlOnKeyDown
   end
   object LEditSurname: TLabeledEdit
-    Left = 135
+    Left = 154
     Top = 8
     Width = 120
     Height = 23
@@ -93,7 +93,7 @@ object CandidateForm: TCandidateForm
     OnKeyPress = LEditSurnameKeyPress
   end
   object LEditName: TLabeledEdit
-    Left = 135
+    Left = 154
     Top = 37
     Width = 120
     Height = 23
@@ -112,7 +112,7 @@ object CandidateForm: TCandidateForm
     OnKeyPress = LEditNameKeyPress
   end
   object LEditPatronymic: TLabeledEdit
-    Left = 135
+    Left = 154
     Top = 66
     Width = 120
     Height = 23
@@ -131,7 +131,7 @@ object CandidateForm: TCandidateForm
     OnKeyPress = LEditPatronymicKeyPress
   end
   object LEditSpeciality: TLabeledEdit
-    Left = 135
+    Left = 154
     Top = 124
     Width = 120
     Height = 23
@@ -150,7 +150,7 @@ object CandidateForm: TCandidateForm
     OnKeyPress = LEditSpecialityKeyPress
   end
   object LEditTitle: TLabeledEdit
-    Left = 135
+    Left = 154
     Top = 176
     Width = 120
     Height = 23
@@ -169,14 +169,14 @@ object CandidateForm: TCandidateForm
     OnKeyPress = LEditTitleKeyPress
   end
   object LEditSalary: TLabeledEdit
-    Left = 135
+    Left = 154
     Top = 205
     Width = 120
     Height = 23
     Hint = '1..99999'
-    EditLabel.Width = 121
+    EditLabel.Width = 150
     EditLabel.Height = 23
-    EditLabel.Caption = #1052#1080#1085#1080#1084#1072#1083#1100#1085#1099#1081' '#1086#1082#1083#1072#1076':'
+    EditLabel.Caption = #1052#1080#1085#1080#1084#1072#1083#1100#1085#1099#1081' '#1086#1082#1083#1072#1076', '#1088#1091#1073'.:'
     LabelPosition = lpLeft
     NumbersOnly = True
     ParentShowHint = False

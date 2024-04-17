@@ -4,8 +4,8 @@ object CandidateSearchForm: TCandidateSearchForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = #1055#1086#1080#1089#1082' '#1082#1072#1085#1076#1080#1076#1072#1090#1072
-  ClientHeight = 162
-  ClientWidth = 201
+  ClientHeight = 151
+  ClientWidth = 197
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
